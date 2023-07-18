@@ -1,19 +1,32 @@
 import { useState } from 'react'
-import './App.css'
+// import './App.css'
+import Sidebar from './components/Sidebar'
+import Feed from './components/Feed'
+import Rightbar from './components/Rightbar'
+import { Box, createTheme, Stack, ThemeProvider } from '@mui/material'
+import Navbar from './components/Navbar'
+import Add from './components/Add'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [mode, setMode] = useState('light')
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode
+    }
+  })
   return (
-    <>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>Click on the Vite and React logos to learn more</p>
-    </>
+    <ThemeProvider theme={darkTheme}>
+      <Box bgcolor={'background.default'} color={'text.primary'} sx={{ width: '100%' }}>
+        <Navbar />
+        <Stack direction='row' spacing={2} justifyContent='space-between'>
+          <Sidebar setMode={setMode} mode={mode} />
+          <Feed />
+          <Rightbar />
+        </Stack>
+        <Add />
+      </Box>
+    </ThemeProvider>
   )
 }
 
