@@ -1,6 +1,8 @@
-import { Favorite, FavoriteBorder, MoreVert, Share } from '@mui/icons-material'
-import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined'
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
+import React from 'react';
+import { Favorite, FavoriteBorder, MoreVert, Share } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {
   Avatar,
   Box,
@@ -16,38 +18,64 @@ import {
   InputAdornment,
   Divider,
   Menu,
-  MenuItem
-} from '@mui/material'
-import Comment from './Comment'
-import { useState } from 'react'
+  MenuItem,
+  ClickAwayListener,
+  Popper,
+  Grow,
+  Paper,
+  MenuList,
+  ListItemIcon,
+  ListItemText
+} from '@mui/material';
+import Comment from './Comment';
+import { useState } from 'react';
 const Post = ({ user }) => {
-  const [isDeleteOptionVisible, setDeleteOptionVisible] = useState(false)
-  const handleClickOnMorevert = () => {
-    setDeleteOptionVisible((isDeleteOptionVisible) => !isDeleteOptionVisible)
-  }
-  const handleDeletePost = () => {}
-  const [comment, setComment] = useState('')
+  // #region Section for handling Card Headers
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDeletePost = () => {};
+  //#endregion
+
+  // #region Section for handling actions on the post
+  const [actionOnPost, setActionOnPost] = useState('');
+  const isHavingAction = Boolean(actionOnPost);
+
+  const handleClickOnAction = (type) => {
+    setActionOnPost(type);
+  };
+  // #endregion
+
+  // #region Section for handling comments
+  const [comments, setComments] = useState([{ user: 'abc', content: 'ABC' }]);
+  const handleClickOnComment = () => {
+    setIsCommentSectionShow((current) => !current);
+  };
+
+  const [comment, setComment] = useState('');
   const handleCommentChange = (e) => {
-    setComment(e.target.value)
-  }
+    setComment(e.target.value);
+  };
+
   const handleAddComment = () => {
     if (comment.trim() !== '') {
       const newComment = {
         user: user,
         content: comment
-      }
-      setComments([...comments, newComment])
-      setComment('')
+      };
+      setComments([...comments, newComment]);
+      setComment('');
     }
-  }
+  };
 
-  const [isCommentSectionShow, setIsCommentSectionShow] = useState(false)
-  const [comments, setComments] = useState([{ user: 'abc', content: 'ABC' }])
-  const handleClickOnComment = () => {
-    setIsCommentSectionShow((current) => !current)
-  }
-  const handleClickOnAction = () => {}
-
+  const [isCommentSectionShow, setIsCommentSectionShow] = useState(false);
+  // #endregion
   return (
     <Card sx={{ margin: 5 }}>
       <Box>
@@ -58,24 +86,50 @@ const Post = ({ user }) => {
             </Avatar>
           }
           action={
-            <IconButton aria-label='settings' onClick={handleClickOnMorevert}>
+            <IconButton aria-label='settings' onClick={handleMenuClick}>
               <MoreVert />
             </IconButton>
           }
           title='John Doe'
           subheader='September 14, 2022'
         />
-        {isDeleteOptionVisible && (
-          <Menu
-            id={`delete-option-menu`}
-            anchorEl={document.getElementById(`delete-option-menu`)}
-            open={isDeleteOptionVisible}
-            onClose={() => setDeleteOptionVisible(false)}
-            className='Hung28'
-          >
-            <MenuItem onClick={handleDeletePost}>Delete</MenuItem>
-          </Menu>
-        )}
+        <div>
+          <Popper open={open} anchorEl={anchorEl} transition disablePortal>
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleMenuClose}>
+                    <MenuList autoFocusItem={open} id='menu-list-grow'>
+                      <MenuItem onClick={handleDeletePost}>
+                        <ListItemIcon>
+                          <DeleteIcon fontSize='small' />
+                        </ListItemIcon>
+                        <ListItemText primary='Delete' />
+                      </MenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+          {/* <Menu
+              id='demo-customized-menu'
+              MenuListProps={{
+                'aria-labelledby': 'demo-customized-button'
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleMenuClose}
+              disableScrollLock={true}
+            >
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <DeleteIcon /> Delete
+              </MenuItem>
+            </Menu> */}
+        </div>
       </Box>
       <CardMedia
         component='img'
@@ -91,8 +145,16 @@ const Post = ({ user }) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label='add to favorites' sx={{ border: '1px' }} onClick={handleClickOnAction}>
-          <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite sx={{ color: 'red' }} />} />
+        <IconButton
+          aria-label='add to favorites'
+          sx={{ border: '1px' }}
+          onClick={() => handleClickOnAction('FAVORITE')}
+        >
+          <Checkbox
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite sx={{ color: 'red' }} />}
+            checked={isHavingAction}
+          />
           <Typography>100</Typography>
         </IconButton>
         <IconButton aria-label='comments' onClick={handleClickOnComment}>
@@ -132,7 +194,7 @@ const Post = ({ user }) => {
         </CardContent>
       </Box>
     </Card>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;

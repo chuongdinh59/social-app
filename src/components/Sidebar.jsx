@@ -1,6 +1,6 @@
-import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material'
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material'
-import React from 'react'
+import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material';
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material';
+import React from 'react';
 
 const listItem = [
   {
@@ -45,7 +45,7 @@ const listItem = [
     text: 'Profile',
     icon: <AccountBox />
   }
-]
+];
 
 const Sidebar = ({ mode, setMode }) => {
   return (
@@ -60,7 +60,7 @@ const Sidebar = ({ mode, setMode }) => {
                   <ListItemText primary={item.text} />
                 </ListItemButton>
               </ListItem>
-            )
+            );
           })}
 
           <ListItem disablePadding>
@@ -74,7 +74,7 @@ const Sidebar = ({ mode, setMode }) => {
         </List>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

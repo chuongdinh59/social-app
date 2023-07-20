@@ -1,25 +1,25 @@
-import { useState } from 'react'
-import { Typography, IconButton, TextField, Button, Box, Avatar } from '@mui/material'
-import { ThumbUp, ThumbDown, Reply } from '@mui/icons-material'
+import { useState } from 'react';
+import { Typography, IconButton, TextField, Button, Box, Avatar } from '@mui/material';
+import { ThumbUp, ThumbDown, Reply } from '@mui/icons-material';
 
 const Comment = ({ comment, index }) => {
-  const [reply, setReply] = useState('')
-  const [replies, setReplies] = useState([])
+  const [reply, setReply] = useState('');
+  const [replies, setReplies] = useState([]);
 
   const handleReplyChange = (e) => {
-    setReply(e.target.value)
-  }
+    setReply(e.target.value);
+  };
 
   const handleAddReply = () => {
     if (reply.trim() !== '') {
       const newReply = {
         user: 'John Doe', // Replace with the actual user
         content: reply
-      }
-      setReplies([...replies, newReply])
-      setReply('')
+      };
+      setReplies([...replies, newReply]);
+      setReply('');
     }
-  }
+  };
 
   return (
     <>
@@ -52,7 +52,7 @@ const Comment = ({ comment, index }) => {
         Add Reply
       </Button>
     </>
-  )
-}
+  );
+};
 
-export default Comment
+export default Comment;

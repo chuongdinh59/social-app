@@ -10,8 +10,8 @@ import {
   ListItemAvatar,
   ListItemText,
   Typography
-} from '@mui/material'
-import React from 'react'
+} from '@mui/material';
+import React from 'react';
 
 const Rightbar = () => {
   return (
@@ -102,7 +102,7 @@ const Rightbar = () => {
         </List>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Rightbar
+export default Rightbar;
