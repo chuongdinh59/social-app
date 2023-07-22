@@ -1,10 +1,10 @@
 import { Box, Stack, Skeleton } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Post from './Post';
 
 const Feed = () => {
   const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState([{}, {}, {}]);
+  const [posts] = useState([{}, {}, {}]);
   setTimeout(() => {
     setLoading(false);
   }, [1000]);
@@ -22,11 +22,9 @@ const Feed = () => {
         <>
           {posts.map((post, index) => {
             return (
-              <>
-                <div key={index}>
-                  <Post key={index} index={index} />
-                </div>
-              </>
+              <div key={index}>
+                <Post key={index} index={index} />
+              </div>
             );
           })}
         </>

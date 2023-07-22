@@ -1,33 +1,10 @@
-import { useState } from 'react'
-// import './App.css'
-import Sidebar from './components/Sidebar'
-import Feed from './components/Feed'
-import Rightbar from './components/Rightbar'
-import { Box, createTheme, Stack, ThemeProvider } from '@mui/material'
-import Navbar from './components/Navbar'
-import Add from './components/Add'
+import { Suspense } from 'react';
+import { useRoutes } from 'react-router-dom';
+import { routers } from './routes';
 
 function App() {
-  const [mode, setMode] = useState('light')
-
-  const darkTheme = createTheme({
-    palette: {
-      mode: mode
-    }
-  })
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <Box bgcolor={'background.default'} color={'text.primary'} sx={{ width: '100%' }}>
-        <Navbar />
-        <Stack direction='row' spacing={2} justifyContent='space-between'>
-          <Sidebar setMode={setMode} mode={mode} />
-          <Feed />
-          <Rightbar />
-        </Stack>
-        <Add />
-      </Box>
-    </ThemeProvider>
-  )
+  const element = useRoutes(routers);
+  return <Suspense fallback={<div>Loading...</div>}>{element}</Suspense>;
 }
 
-export default App
+export default App;

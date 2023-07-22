@@ -18,7 +18,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import logo from '../assets/surface_logo.png';
 
 const StyledToolbar = styled(Toolbar)({
@@ -53,7 +53,7 @@ const UserBox = styled(Box)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  // #region Search 
+  // #region Search
   const searchString = useRef();
   // #endregion
 
@@ -81,7 +81,7 @@ const Navbar = () => {
         </Box>
         <Pets sx={{ display: { xs: 'block', sm: 'none' } }} />
         <Search>
-          <InputBase placeholder='search...' value={searchString}/>
+          <InputBase placeholder='search...' value={searchString} />
         </Search>
         <Icons>
           <Badge badgeContent={4} color='error'>
