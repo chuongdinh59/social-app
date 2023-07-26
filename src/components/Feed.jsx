@@ -23,7 +23,7 @@ const Feed = () => {
           {posts.map((post, index) => {
             return (
               <div key={index}>
-                <Post key={index} index={index} />
+                <Post />
               </div>
             );
           })}

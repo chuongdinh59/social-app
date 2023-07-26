@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
 import { Add } from '@mui/icons-material';
 import { Box, Stack, createTheme } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Rightbar from '../../components/Rightbar';
