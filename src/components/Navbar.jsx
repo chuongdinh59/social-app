@@ -81,7 +81,7 @@ const Navbar = () => {
         </Box>
         <Pets sx={{ display: { xs: 'block', sm: 'none' } }} />
         <Search>
-          <InputBase placeholder='search...' value={searchString} />
+          <InputBase placeholder='Search...' />
         </Search>
         <Icons>
           <Badge badgeContent={4} color='error'>

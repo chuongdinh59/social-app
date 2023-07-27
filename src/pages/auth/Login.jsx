@@ -20,6 +20,7 @@ import authService from '../../apis/authService';
 import userService from '../../apis/userService';
 import UserContext from '../../context/UserContext';
 import { setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
+import { Skeleton } from '@mui/material';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
