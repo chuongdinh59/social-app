@@ -21,7 +21,6 @@ import userService from '../../apis/userService';
 import UserContext from '../../context/UserContext';
 import { setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
 import { Skeleton } from '@mui/material';
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Login() {
@@ -62,7 +61,6 @@ export default function Login() {
         const {
           data: { token, refreshToken }
         } = res?.data;
-        // save token in local storage
         setAccessTokenToLS(token);
         setRefreshTokenToLS(refreshToken);
         if (token) {

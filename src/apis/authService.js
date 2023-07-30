@@ -1,9 +1,6 @@
-import { URL_REGISTER, URL_LOGIN, URL_LOGOUT } from '../constant/url';
+import { URL_LOGIN, URL_LOGOUT } from '../constant/url';
 import http from '../utils/http';
 const authService = {
-  registerAccount(body) {
-    return http.post(URL_REGISTER, body);
-  },
   login(body) {
     return http.post(URL_LOGIN, body);
   },
