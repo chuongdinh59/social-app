@@ -1,10 +1,10 @@
 import { ThemeProvider } from '@emotion/react';
-import { Add } from '@mui/icons-material';
 import { Box, Stack, createTheme } from '@mui/material';
 import { useContext, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Rightbar from '../../components/Rightbar';
+import Add from '../../components/Add';
 import Feed from '../../components/Feed';
 import UserContext from '../../context/UserContext';
 function Home() {

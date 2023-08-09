@@ -144,6 +144,7 @@ export default function Login() {
                 startIcon={<Google />}
                 fullWidth
                 size='large'
+                href='https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/login-google&response_type=code&client_id=510556489503-gtmvki42khmh32mfnrl51qunq5islnvt.apps.googleusercontent.com&approval_prompt=force'
               >
                 Continue with Google
               </Button>

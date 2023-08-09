@@ -13,6 +13,8 @@ import { useMutation } from '@tanstack/react-query';
 import * as React from 'react';
 import { useState } from 'react';
 import userService from '../../apis/userService';
+import { IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function Copyright(props) {
   return (
@@ -35,33 +37,26 @@ export default function Register() {
   const [selectedFile, setSelectedFile] = useState(null);
   // Mutations
   const mutation = useMutation((formData) => userService.registerAccount(formData), {
-    onSuccess: () => {
-      // Handle success, e.g., redirect or show a success message
+    onSuccess: (res) => {
+      console.log(res);
     },
     onError: (error) => {
-      // Handle error, e.g., display an error message
       console.error('Error:', error.message);
     }
   });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const data = new FormData();
-    const userData = {};
-    for (let [key, value] of form.entries()) {
-      userData[key] = value;
-    }
-    data.append('user', JSON.stringify(userData));
-    selectedFile && data.append('avatarFile', selectedFile);
-    // mutation.mutate(form);
-    fetch('http://localhost:8080/api/user/', {
-      method: 'POST',
-      body: data
-    });
+    selectedFile && form.append('avatarFile', selectedFile);
+    mutation.mutate(form);
   };
 
   const handleFileChange = (e) => {
-    // Get the selected file from the input element
     const file = e.target.files[0];
     setSelectedFile(file);
   };
@@ -106,29 +101,54 @@ export default function Register() {
             <TextField id='role' name='role' value={2} style={{ display: 'none' }} />
             <TextField id='status' name='status' value={'DEACTIVE'} style={{ display: 'none' }} />
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete='given-name'
-                  name='firstName'
-                  required
-                  fullWidth
-                  id='firstName'
-                  label='First Name'
-                  autoFocus
-                />
+              <Grid item xs={12} sm={5}>
+                <TextField required fullWidth id='alumniId' label='Your ID' name='alumniId' />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={7}>
                 <TextField
                   required
                   fullWidth
-                  id='lastName'
-                  label='Last Name'
-                  name='lastName'
+                  id='displayName'
+                  label='Display name'
+                  name='displayName'
                   autoComplete='family-name'
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField required fullWidth id='alumniId' label='Your ID' name='alumniId' />
+                <TextField
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  label='Password'
+                  name='password'
+                  variant='outlined'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton onClick={handleTogglePassword} edge='end'>
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  label='Confirm Password'
+                  name='confirmPassword'
+                  variant='outlined'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton onClick={handleTogglePassword} edge='end'>
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TextField required fullWidth id='email' label='Email Address' name='email' autoComplete='email' />

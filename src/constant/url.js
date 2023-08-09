@@ -6,4 +6,8 @@ export const URL_REFRESH_TOKEN = '/refresh-token'; // Replace with your refresh 
 
 // User API
 
-export const URL_USER = '/api/user/';
+export const URL_USER = '/api/users/';
+
+// Post API
+
+export const URL_POST = '/api/post/';

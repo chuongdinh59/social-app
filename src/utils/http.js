@@ -18,7 +18,7 @@ class Http {
     this.refreshToken = getRefreshTokenFromLS();
     this.refreshTokenRequest = null;
     this.instance = axios.create({
-      baseURL: 'http://localhost:8080/', // Replace with your base URL
+      baseURL: 'http://localhost:8080', // Replace with your base URL
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
