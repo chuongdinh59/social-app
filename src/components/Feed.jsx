@@ -20,13 +20,17 @@ const Feed = () => {
         </Stack>
       ) : (
         <>
-          {posts.map((post, index) => {
+          {/* {posts.map((post, index) => {
             return (
               <div key={index}>
                 <Post />
               </div>
             );
-          })}
+          })} */}
+
+          <Post postType='SURVEY' />
+          <Post />
+          <Post />
         </>
       )}
     </Box>

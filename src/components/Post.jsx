@@ -29,7 +29,8 @@ import {
 } from '@mui/material';
 import Comment from './Comment';
 import { useState } from 'react';
-const Post = ({ user }) => {
+import Survey from './Survey';
+const Post = ({ user, postType = 'POST' }) => {
   // #region Section for handling Card Headers
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -115,28 +116,19 @@ const Post = ({ user }) => {
               </Grow>
             )}
           </Popper>
-          {/* <Menu
-              id='demo-customized-menu'
-              MenuListProps={{
-                'aria-labelledby': 'demo-customized-button'
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              disableScrollLock={true}
-            >
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <DeleteIcon /> Delete
-              </MenuItem>
-            </Menu> */}
         </div>
       </Box>
-      <CardMedia
-        component='img'
-        height='20%'
-        image='https://images.pexels.com/photos/4534200/pexels-photo-4534200.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-        alt='Paella dish'
-      />
+
+      {postType === 'SURVEY' ? (
+        <Survey />
+      ) : (
+        <CardMedia
+          component='img'
+          height='20%'
+          image='https://images.pexels.com/photos/4534200/pexels-photo-4534200.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+          alt='Paella dish'
+        />
+      )}
       {/* Card Content */}
       <CardContent>
         <Typography variant='body2' color='text.secondary'>

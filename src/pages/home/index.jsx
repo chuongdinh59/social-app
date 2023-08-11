@@ -7,6 +7,7 @@ import Rightbar from '../../components/Rightbar';
 import Add from '../../components/Add';
 import Feed from '../../components/Feed';
 import UserContext from '../../context/UserContext';
+import Survey from '../../components/Survey';
 function Home() {
   const [mode, setMode] = useState('light');
   const data = useContext(UserContext);
@@ -27,6 +28,7 @@ function Home() {
         </Stack>
         <Add />
       </Box>
+      <Survey />
     </ThemeProvider>
   );
 }
