@@ -123,9 +123,9 @@ const Profile = () => {
 
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <Typography variant='h5' sx={{ marginTop: 3 }}>
+            {/* <Typography variant='h5' sx={{ marginTop: 3 }}>
               Introduce
-            </Typography>
+            </Typography> */}
             <Typography variant='h5' sx={{ marginTop: 3 }}>
               Friends
             </Typography>
@@ -150,6 +150,7 @@ const Profile = () => {
               <Typography variant='h5' sx={{ marginTop: 3 }}>
                 Posts
               </Typography>
+              {/* get some post use post components */}
               {posts.map((post) => (
                 <Grid item xs={12} key={post.id}>
                   <Paper sx={{ padding: 2, borderRadius: 2, marginBottom: 4 }}>

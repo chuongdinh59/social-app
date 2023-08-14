@@ -1,6 +1,7 @@
 import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material';
-
+import { Link } from 'react-router-dom';
+import MessageIcon from '@mui/icons-material/Message';
 const listItem = [
   {
     component: 'a',
@@ -40,9 +41,15 @@ const listItem = [
   },
   {
     component: 'a',
-    href: '#home',
+    href: '/profile',
     text: 'Profile',
     icon: <AccountBox />
+  },
+  {
+    component: 'a',
+    href: '/chat',
+    text: 'Messages',
+    icon: <MessageIcon />
   }
 ];
 
@@ -53,12 +60,14 @@ const Sidebar = ({ mode, setMode }) => {
         <List>
           {listItem.map((item, index) => {
             return (
-              <ListItem disablePadding key={index}>
-                <ListItemButton component={item.component} href={item.href}>
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
+              <Link to={item.href} style={{ textDecoration: 'none', color: '#000' }}>
+                <ListItem disablePadding key={index}>
+                  <ListItemButton component={item.component}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
             );
           })}
 
