@@ -1,10 +1,11 @@
-import { Box, Stack, Skeleton } from '@mui/material';
+import { Box, Skeleton, Stack } from '@mui/material';
 import { useState } from 'react';
+import { posts } from '../mock/post';
 import Post from './Post';
 
 const Feed = () => {
   const [loading, setLoading] = useState(true);
-  const [posts] = useState([{}, {}, {}]);
+  const ps = posts;
   setTimeout(() => {
     setLoading(false);
   }, [1000]);
@@ -27,10 +28,9 @@ const Feed = () => {
               </div>
             );
           })} */}
-
-          <Post postType='SURVEY' />
-          <Post />
-          <Post />
+          {ps.map((post) => {
+            return <Post key={post.id} post={post} />;
+          })}
         </>
       )}
     </Box>

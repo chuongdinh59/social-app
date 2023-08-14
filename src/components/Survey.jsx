@@ -9,54 +9,10 @@ import {
   Button
 } from '@mui/material';
 
-const myData = {
-  id: 1,
-  content: 'Câu hỏi a',
-  user: 'Nguyen Van A',
-  postType: 'SURVEY',
-  questions: [
-    {
-      content: 'Trả lời a',
-      questionType: 'CHECKBOX',
-      answers: [
-        {
-          content: 'ABC'
-        },
-        {
-          content: 'CDE'
-        },
-        {
-          content: 'DEF'
-        }
-      ]
-    },
-    {
-      content: 'Trả lời b',
-      questionType: 'RADIO',
-      answers: [
-        {
-          content: 'ABC'
-        },
-        {
-          content: 'CDE'
-        },
-        {
-          content: 'DEF'
-        }
-      ]
-    },
-    {
-      content: 'Câu hỏi lời c text',
-      questionType: 'TEXT'
-    }
-  ]
-};
-
-function Survey() {
+function Survey({ survey }) {
   return (
     <div>
-      {myData.questions.map((q, index) => {
-        console.log(q);
+      {survey.questions.map((q, index) => {
         return (
           <div key={index} style={{ padding: '10px' }}>
             <p>Câu hỏi: {q.content}</p>
@@ -80,7 +36,7 @@ function Survey() {
           </div>
         );
       })}
-      <div style={{ padding: '0 10px' }}>
+      <div style={{ padding: '10px' }}>
         <Button fullWidth variant='outlined'>
           Complete
         </Button>
@@ -105,8 +61,7 @@ function MyRadioGroup({ answers }) {
       aria-labelledby='demo-radio-buttons-group-label'
       style={{
         display: 'flex',
-        flexDirection: 'row',
-        '-webkit-flex-direction': 'row'
+        flexDirection: 'row'
       }}
       name='radio-buttons-group'
     >

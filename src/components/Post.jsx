@@ -1,7 +1,6 @@
-import React from 'react';
 import { Favorite, FavoriteBorder, MoreVert, Share } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import {
   Avatar,
@@ -10,37 +9,45 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  CardMedia,
   Checkbox,
-  IconButton,
-  Typography,
-  TextField,
-  InputAdornment,
-  Divider,
-  Menu,
-  MenuItem,
   ClickAwayListener,
-  Popper,
+  Divider,
   Grow,
-  Paper,
-  MenuList,
+  IconButton,
+  InputAdornment,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  TextField,
+  Typography
 } from '@mui/material';
+import React, { useState } from 'react';
+import { PostType, Status, imagePost, myComments, survey } from '../mock/post';
 import Comment from './Comment';
-import { useState } from 'react';
+import ImageGrid from './ImageGrid';
+import ImageModal from './ImageModal';
 import Survey from './Survey';
-const Post = ({ user, postType = 'POST' }) => {
+const Post = ({ post }) => {
   // #region Section for handling Card Headers
+  const { id, content, count_action, created_date, lock_comment, modified_date, type, user } = post;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [showModal, setShowModal] = useState(false);
+  const handleToggleModal = () => setShowModal(!showModal);
+
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+  const images = imagePost.filter((i) => i.post_id === id);
+  const s = survey.find((i) => i.post_id === id);
+  const com = myComments.filter((c) => c.post_id === id);
   const handleDeletePost = () => {};
   //#endregion
 
@@ -54,20 +61,28 @@ const Post = ({ user, postType = 'POST' }) => {
   // #endregion
 
   // #region Section for handling comments
-  const [comments, setComments] = useState([{ user: 'abc', content: 'ABC' }]);
+  const [comments, setComments] = useState(com);
   const handleClickOnComment = () => {
     setIsCommentSectionShow((current) => !current);
   };
 
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState([]);
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
-
+  // Test user
   const handleAddComment = () => {
     if (comment.trim() !== '') {
       const newComment = {
-        user: user,
+        user: {
+          alumni_id: 'chudev',
+          displayName: 'Bob Bob',
+          email: 'bobwilliams@example.com',
+          status: Status.ACTIVE,
+          created_date: '20-11-2023',
+          modified_date: '20-11-2023',
+          avatar: 'https://source.unsplash.com/random?wallpapers'
+        },
         content: comment
       };
       setComments([...comments, newComment]);
@@ -81,18 +96,14 @@ const Post = ({ user, postType = 'POST' }) => {
     <Card sx={{ margin: 5 }}>
       <Box>
         <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src=''>
-              R
-            </Avatar>
-          }
+          avatar={<Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={user.avatar} />}
           action={
             <IconButton aria-label='settings' onClick={handleMenuClick}>
               <MoreVert />
             </IconButton>
           }
-          title='John Doe'
-          subheader='September 14, 2022'
+          title={user.displayName}
+          subheader={created_date}
         />
         <div>
           <Popper open={open} anchorEl={anchorEl} transition disablePortal>
@@ -118,22 +129,13 @@ const Post = ({ user, postType = 'POST' }) => {
           </Popper>
         </div>
       </Box>
-
-      {postType === 'SURVEY' ? (
-        <Survey />
-      ) : (
-        <CardMedia
-          component='img'
-          height='20%'
-          image='https://images.pexels.com/photos/4534200/pexels-photo-4534200.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-          alt='Paella dish'
-        />
-      )}
+      {type === PostType.SURVEY && <Survey survey={s} />}
+      <ImageGrid images={images} handleToggleModal={handleToggleModal} />
+      <ImageModal show={showModal} images={images} onClose={handleToggleModal} />
       {/* Card Content */}
       <CardContent>
         <Typography variant='body2' color='text.secondary'>
-          This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of
-          frozen peas along with the mussels, if you like.
+          {content}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -147,11 +149,11 @@ const Post = ({ user, postType = 'POST' }) => {
             checkedIcon={<Favorite sx={{ color: 'red' }} />}
             checked={isHavingAction}
           />
-          <Typography>100</Typography>
+          <Typography>{count_action}</Typography>
         </IconButton>
         <IconButton aria-label='comments' onClick={handleClickOnComment}>
           <CommentOutlinedIcon />
-          <Typography>100</Typography>
+          <Typography>{com.length}</Typography>
         </IconButton>
         <IconButton aria-label='share'>
           <Share />

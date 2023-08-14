@@ -28,7 +28,6 @@ function Home() {
         </Stack>
         <Add />
       </Box>
-      <Survey />
     </ThemeProvider>
   );
 }
