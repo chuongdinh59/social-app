@@ -8,10 +8,18 @@ import Add from '../../components/Add';
 import Feed from '../../components/Feed';
 import UserContext from '../../context/UserContext';
 import Survey from '../../components/Survey';
+import { useQuery } from '@tanstack/react-query';
+import postService from '../../apis/postService';
+import { PostContext } from '../../context/PostContext';
 function Home() {
   const [mode, setMode] = useState('light');
-  const data = useContext(UserContext);
-  console.log(data);
+  // const { post, updatePosts } = useContext(PostContext);
+  // let id = 1;
+  // const { data: result } = useQuery(['post', id], () => postService.getPost(id));
+
+  // const { data: posts } = result || { data: [] };
+
+  // console.log(posts);
   const darkTheme = createTheme({
     palette: {
       mode: mode

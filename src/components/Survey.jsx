@@ -12,19 +12,19 @@ import {
 function Survey({ survey }) {
   return (
     <div>
-      {survey.questions.map((q, index) => {
+      {survey?.map((q, index) => {
         return (
           <div key={index} style={{ padding: '10px' }}>
             <p>Câu hỏi: {q.content}</p>
             <div style={{ padding: '10px 0' }}>
               {q.questionType === 'CHECKBOX' && (
                 <FormControl fullWidth component='fieldset'>
-                  <CheckboxGroup answers={q.answers} />
+                  <CheckboxGroup answers={q.choices} />
                 </FormControl>
               )}
               {q.questionType === 'RADIO' && (
                 <FormControl fullWidth component='fieldset'>
-                  <MyRadioGroup answers={q.answers} />
+                  <MyRadioGroup answers={q.choices} />
                 </FormControl>
               )}
               {q.questionType === 'TEXT' && (

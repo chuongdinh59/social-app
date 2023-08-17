@@ -32,7 +32,18 @@ import ImageModal from './ImageModal';
 import Survey from './Survey';
 const Post = ({ post }) => {
   // #region Section for handling Card Headers
-  const { id, content, count_action, created_date, lock_comment, modified_date, type, user } = post;
+  const {
+    id,
+    content,
+    count_action,
+    createdDate,
+    imagePostSet: images,
+    lockComment,
+    modifiedDate,
+    type,
+    user,
+    questions
+  } = post;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -45,9 +56,6 @@ const Post = ({ post }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const images = imagePost.filter((i) => i.post_id === id);
-  const s = survey.find((i) => i.post_id === id);
-  const com = myComments.filter((c) => c.post_id === id);
   const handleDeletePost = () => {};
   //#endregion
 
@@ -61,7 +69,7 @@ const Post = ({ post }) => {
   // #endregion
 
   // #region Section for handling comments
-  const [comments, setComments] = useState(com);
+  const [comments, setComments] = useState([]);
   const handleClickOnComment = () => {
     setIsCommentSectionShow((current) => !current);
   };
@@ -103,7 +111,7 @@ const Post = ({ post }) => {
             </IconButton>
           }
           title={user.displayName}
-          subheader={created_date}
+          subheader={createdDate}
         />
         <div>
           <Popper open={open} anchorEl={anchorEl} transition disablePortal>
@@ -129,7 +137,7 @@ const Post = ({ post }) => {
           </Popper>
         </div>
       </Box>
-      {type === PostType.SURVEY && <Survey survey={s} />}
+      {type === PostType.SURVEY && <Survey survey={questions} />}
       <ImageGrid images={images} handleToggleModal={handleToggleModal} />
       <ImageModal show={showModal} images={images} onClose={handleToggleModal} />
       {/* Card Content */}
@@ -153,7 +161,7 @@ const Post = ({ post }) => {
         </IconButton>
         <IconButton aria-label='comments' onClick={handleClickOnComment}>
           <CommentOutlinedIcon />
-          <Typography>{com.length}</Typography>
+          {/* <Typography>{com.length}</Typography> */}
         </IconButton>
         <IconButton aria-label='share'>
           <Share />

@@ -28,7 +28,7 @@ const ImageGrid = ({ images, handleToggleModal }) => {
               display: 'block'
             }}
           />
-          {index === 1 && limitedImages.length > 1 && (
+          {index === 1 && limitedImages.length > 2 && (
             <Box
               sx={{
                 position: 'absolute',

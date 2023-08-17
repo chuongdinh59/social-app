@@ -7,6 +7,9 @@ const postService = {
         'Content-Type': 'multipart/form-data'
       }
     });
+  },
+  getPosts(pageNumber) {
+    return http.get(`${URL_POST}?page=${pageNumber}`);
   }
 };
 

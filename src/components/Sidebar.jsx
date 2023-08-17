@@ -1,6 +1,6 @@
 import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import MessageIcon from '@mui/icons-material/Message';
 const listItem = [
   {
@@ -58,18 +58,14 @@ const Sidebar = ({ mode, setMode }) => {
     <Box flex={1} p={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
       <Box position='fixed'>
         <List>
-          {listItem.map((item, index) => {
-            return (
-              <Link to={item.href} style={{ textDecoration: 'none', color: '#000' }}>
-                <ListItem disablePadding key={index}>
-                  <ListItemButton component={item.component}>
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              </Link>
-            );
-          })}
+          {listItem.map((item, index) => (
+            <ListItem disablePadding key={index}>
+              <ListItemButton component={Link} to={item.href} style={{ textDecoration: 'none', color: '#000' }}>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
 
           <ListItem disablePadding>
             <ListItemButton component='a' href='#simple-list'>

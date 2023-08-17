@@ -9,9 +9,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,6 @@ import authService from '../../apis/authService';
 import userService from '../../apis/userService';
 import UserContext from '../../context/UserContext';
 import { setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
-import { Skeleton } from '@mui/material';
 const defaultTheme = createTheme();
 
 export default function Login() {
