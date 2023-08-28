@@ -1,87 +1,53 @@
 import { Box, Skeleton, Stack } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import Post from './Post';
+import { toast } from 'react-toastify';
 const Feed = () => {
   const { posts, updatePosts } = useContext(PostContext);
+  const [loading, setLoading] = useState();
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const prevScrollY = useRef(0); // Use a ref to store previous scroll position
-
-  const loadNextPage = async (pageNumber) => {
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const { data } = await postService.getPosts(pageNumber);
-      if (data && data.length !== 0) {
-        updatePosts(data);
-        setPage(pageNumber);
-      }
+      const response = await postService.getPosts(page);
+      updatePosts(response?.data || []);
+      setPage((prevPage) => prevPage + 1);
     } catch (error) {
-      // Handle error
-    }
-  };
-
-  const handleScroll = () => {
-    const scrollThreshold = window.innerHeight;
-    if (window.scrollY + scrollThreshold + 100 >= document.body.scrollHeight) {
-      if (!loading) {
-        setLoading(true);
-        prevScrollY.current = window.scrollY; // Store current scroll position
-        loadNextPage(page + 1);
-      }
+      toast.error('error: ', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Load initial page when the component mounts
-    loadNextPage(1);
+    fetchData();
   }, []);
-
-  useEffect(() => {
-    // Attach scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [page, loading]);
-
-  // After new content is loaded and component re-renders, adjust scroll position
-  useEffect(() => {
-    if (!loading) {
-      window.scrollTo(0, prevScrollY.current); // Restore previous scroll position
-    }
-  }, [loading]);
-
-  console.log(posts);
-
-  setTimeout(() => {
-    setLoading(false);
-  }, [1000]);
 
   return (
     <Box flex={4} p={{ xs: 0, md: 2 }}>
-      {loading ? (
-        <Stack spacing={1}>
-          <Skeleton variant='text' height={100} />
-          <Skeleton variant='text' height={20} />
-          <Skeleton variant='text' height={20} />
-          <Skeleton variant='rectangular' height={300} />
-        </Stack>
-      ) : (
-        <>
-          {/* {posts.map((post, index) => {
-            return (
-              <div key={index}>
-                <Post />
-              </div>
-            );
-          })} */}
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchData}
+        hasMore={true} // Replace with a condition based on your data source
+        loader={
+          <Stack spacing={1}>
+            <Skeleton variant='text' height={100} />
+            <Skeleton variant='text' height={20} />
+            <Skeleton variant='text' height={20} />
+            <Skeleton variant='rectangular' height={300} />
+          </Stack>
+        }
+        endMessage={<p>No more data to load.</p>}
+      >
+        <ul>
           {posts?.map((post) => {
             return <Post key={post.id} post={post} />;
           })}
-        </>
-      )}
+        </ul>
+      </InfiniteScroll>
     </Box>
   );
 };

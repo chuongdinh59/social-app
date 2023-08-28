@@ -13,13 +13,7 @@ import postService from '../../apis/postService';
 import { PostContext } from '../../context/PostContext';
 function Home() {
   const [mode, setMode] = useState('light');
-  // const { post, updatePosts } = useContext(PostContext);
-  // let id = 1;
-  // const { data: result } = useQuery(['post', id], () => postService.getPost(id));
 
-  // const { data: posts } = result || { data: [] };
-
-  // console.log(posts);
   const darkTheme = createTheme({
     palette: {
       mode: mode

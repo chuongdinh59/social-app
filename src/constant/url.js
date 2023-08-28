@@ -1,3 +1,7 @@
+// SERVER ORIGIN
+
+export const URL_SERVER = 'http://localhost:8080';
+
 // Authentication
 export const URL_LOGIN = '/authenticate'; // Replace with your login URL
 export const URL_REGISTER = '/register'; // Replace with your register URL
@@ -10,4 +14,4 @@ export const URL_USER = '/api/users/';
 
 // Post API
 
-export const URL_POST = '/api/post/';
+export const URL_POST = '/api/posts/';

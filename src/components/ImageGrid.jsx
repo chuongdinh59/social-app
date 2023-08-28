@@ -28,7 +28,8 @@ const ImageGrid = ({ images, handleToggleModal }) => {
               display: 'block'
             }}
           />
-          {index === 1 && limitedImages.length > 2 && (
+          {/* Hình 2 && số lượng hình lớn hơn 2  */}
+          {index === 1 && images.length > 2 && (
             <Box
               sx={{
                 position: 'absolute',

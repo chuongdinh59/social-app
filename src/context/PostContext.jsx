@@ -5,6 +5,7 @@ export function PostProvider({ children }) {
   const [posts, setPosts] = useState([]);
 
   const updatePosts = (newPosts) => {
+    console.log(newPosts);
     setPosts((prevPosts) => [...prevPosts, ...newPosts]);
   };
 

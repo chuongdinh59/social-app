@@ -1,7 +1,9 @@
-import { Favorite, FavoriteBorder, MoreVert, Share } from '@mui/icons-material';
+import { FacebookCounter, FacebookSelector, PokemonSelector } from '@charkour/react-reactions';
+import { MoreVert, Share } from '@mui/icons-material';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import {
   Avatar,
   Box,
@@ -9,9 +11,9 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Checkbox,
   ClickAwayListener,
   Divider,
+  Grid,
   Grow,
   IconButton,
   InputAdornment,
@@ -25,13 +27,32 @@ import {
   Typography
 } from '@mui/material';
 import React, { useState } from 'react';
-import { PostType, Status, imagePost, myComments, survey } from '../mock/post';
+import { PostType, Status } from '../mock/post';
 import Comment from './Comment';
 import ImageGrid from './ImageGrid';
 import ImageModal from './ImageModal';
 import Survey from './Survey';
+import { makeStyles } from '@mui/styles';
+const useStyles = makeStyles((theme) => ({
+  boxContainer: {
+    position: 'relative',
+    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+    justifyContent: 'center',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: '-100%',
+      left: 0,
+      width: '220%',
+      height: '100%',
+      boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+      pointerEvents: 'none'
+    }
+  }
+}));
 const Post = ({ post }) => {
   // #region Section for handling Card Headers
+  const classes = useStyles();
   const {
     id,
     content,
@@ -48,6 +69,7 @@ const Post = ({ post }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState(false);
+  const [showIcon, setShowIcon] = useState(false);
   const handleToggleModal = () => setShowModal(!showModal);
 
   const handleMenuClick = (event) => {
@@ -145,27 +167,74 @@ const Post = ({ post }) => {
         <Typography variant='body2' color='text.secondary'>
           {content}
         </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton
-          aria-label='add to favorites'
-          sx={{ border: '1px' }}
-          onClick={() => handleClickOnAction('FAVORITE')}
+        <Box
+          sx={{
+            position: 'relative'
+          }}
         >
-          <Checkbox
-            icon={<FavoriteBorder />}
-            checkedIcon={<Favorite sx={{ color: 'red' }} />}
-            checked={isHavingAction}
-          />
-          <Typography>{count_action}</Typography>
-        </IconButton>
+          <FacebookCounter />
+        </Box>
+      </CardContent>
+
+      <CardActions>
+        <Grid container>
+          <Grid
+            item
+            xs={4}
+            container
+            justify='center'
+            alignItems='center'
+            position='relative'
+            // style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
+            onMouseEnter={() => setShowIcon(true)}
+            onMouseLeave={() => setShowIcon(false)}
+            className={classes.boxContainer}
+          >
+            {showIcon && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '-100%',
+                  left: 0,
+                  zIndex: 10
+                }}
+              >
+                <PokemonSelector />
+              </Box>
+            )}
+            <IconButton aria-label='comments'>
+              <ThumbUpOffAltIcon /> <Typography variant='h6'>Thích</Typography>
+            </IconButton>
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            container
+            justify='center'
+            alignItems='center'
+            style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
+          >
+            <IconButton aria-label='comments' onClick={handleClickOnComment}>
+              <CommentOutlinedIcon /> <Typography variant='h6'>Bình luận</Typography>
+            </IconButton>
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            container
+            justify='center'
+            alignItems='center'
+            style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
+          >
+            <IconButton aria-label='share'>
+              <Share /> <Typography variant='h6'>Chia sẻ</Typography>
+            </IconButton>
+          </Grid>
+        </Grid>
+        {/* <FacebookSelector />;
         <IconButton aria-label='comments' onClick={handleClickOnComment}>
           <CommentOutlinedIcon />
-          {/* <Typography>{com.length}</Typography> */}
-        </IconButton>
-        <IconButton aria-label='share'>
-          <Share />
-        </IconButton>
+        </IconButton> */}
       </CardActions>
       <Divider />
       {/* Comment section */}
