@@ -1,4 +1,4 @@
-import { FacebookCounter, FacebookSelector, PokemonSelector } from '@charkour/react-reactions';
+import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
 import { MoreVert, Share } from '@mui/icons-material';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,6 +7,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -26,13 +27,15 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
+import commentService from '../apis/commentService';
 import { PostType, Status } from '../mock/post';
 import Comment from './Comment';
 import ImageGrid from './ImageGrid';
 import ImageModal from './ImageModal';
 import Survey from './Survey';
-import { makeStyles } from '@mui/styles';
+import { getProfileFromLS } from '../utils/auth';
 const useStyles = makeStyles((theme) => ({
   boxContainer: {
     position: 'relative',
@@ -70,8 +73,8 @@ const Post = ({ post }) => {
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState(false);
   const [showIcon, setShowIcon] = useState(false);
+  const [page, setPage] = useState(1);
   const handleToggleModal = () => setShowModal(!showModal);
-
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -80,7 +83,6 @@ const Post = ({ post }) => {
   };
   const handleDeletePost = () => {};
   //#endregion
-
   // #region Section for handling actions on the post
   const [actionOnPost, setActionOnPost] = useState('');
   const isHavingAction = Boolean(actionOnPost);
@@ -92,7 +94,9 @@ const Post = ({ post }) => {
 
   // #region Section for handling comments
   const [comments, setComments] = useState([]);
-  const handleClickOnComment = () => {
+  const handleClickOnComment = async () => {
+    let res = await commentService.getCommentByPostId(id);
+    res?.data && setComments(res.data.data);
     setIsCommentSectionShow((current) => !current);
   };
 
@@ -100,27 +104,30 @@ const Post = ({ post }) => {
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
+
+  const handleDeleteComent = (id) => {
+    setComments((pre) => pre.filter((i) => i.id !== id));
+  };
   // Test user
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (comment.trim() !== '') {
       const newComment = {
-        user: {
-          alumni_id: 'chudev',
-          displayName: 'Bob Bob',
-          email: 'bobwilliams@example.com',
-          status: Status.ACTIVE,
-          created_date: '20-11-2023',
-          modified_date: '20-11-2023',
-          avatar: 'https://source.unsplash.com/random?wallpapers'
-        },
+        user: getProfileFromLS(),
         content: comment
       };
       setComments([...comments, newComment]);
+      await commentService.addComment({
+        content: comment,
+        postId: id
+      });
       setComment('');
     }
   };
-
   const [isCommentSectionShow, setIsCommentSectionShow] = useState(false);
+  const handleGetMoreComments = async () => {
+    let res = await commentService.getCommentByPostId(id, page + 1);
+    res?.data && setComments((pre) => [...pre, ...res.data.data]);
+  };
   // #endregion
   return (
     <Card sx={{ margin: 5 }}>
@@ -136,7 +143,15 @@ const Post = ({ post }) => {
           subheader={createdDate}
         />
         <div>
-          <Popper open={open} anchorEl={anchorEl} transition disablePortal>
+          <Popper
+            sx={{
+              zIndex: 10
+            }}
+            open={open}
+            anchorEl={anchorEl}
+            transition
+            disablePortal
+          >
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
@@ -199,7 +214,11 @@ const Post = ({ post }) => {
                   zIndex: 10
                 }}
               >
-                <PokemonSelector />
+                <FacebookSelector
+                  onSelect={(key) => {
+                    console.log('react:', key.toUpperCase());
+                  }}
+                />
               </Box>
             )}
             <IconButton aria-label='comments'>
@@ -231,17 +250,16 @@ const Post = ({ post }) => {
             </IconButton>
           </Grid>
         </Grid>
-        {/* <FacebookSelector />;
-        <IconButton aria-label='comments' onClick={handleClickOnComment}>
-          <CommentOutlinedIcon />
-        </IconButton> */}
       </CardActions>
       <Divider />
       {/* Comment section */}
       <Box display={isCommentSectionShow ? 'block' : 'none'}>
+        <Button onClick={() => handleGetMoreComments()} variant='text'>
+          Xem thêm bình luận
+        </Button>
         <CardContent>
           {comments.map((comment, index) => (
-            <Comment comment={comment} key={index} />
+            <Comment handleDelete={handleDeleteComent} comment={comment} key={index} />
           ))}
         </CardContent>
         <CardContent>

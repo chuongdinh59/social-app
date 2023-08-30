@@ -31,21 +31,6 @@ export default function Login() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const {
-    isLoading: isUserLoading,
-    error: userError,
-    refetch: refetchUserData
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => userService.getCurrentUser(),
-    enabled: false,
-    onSuccess: (res) => {
-      const { data } = res?.data;
-      setProfileToLS(data);
-      setUser(data);
-    }
-  });
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -56,15 +41,25 @@ export default function Login() {
       return;
     }
     loginMutate.mutate(data, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         const {
           data: { token, refreshToken }
         } = res?.data;
+
         setAccessTokenToLS(token);
         setRefreshTokenToLS(refreshToken);
+
         if (token) {
-          refetchUserData();
+          try {
+            const currentUserResponse = await userService.getCurrentUser();
+            const data = currentUserResponse?.data;
+            setProfileToLS(data);
+            setUser(data);
+          } catch (error) {
+            console.error('Error fetching current user:', error);
+          }
         }
+
         navigate('/');
       }
     });

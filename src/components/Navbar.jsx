@@ -20,6 +20,8 @@ import {
 } from '@mui/material';
 import React, { useRef } from 'react';
 import logo from '../assets/surface_logo.png';
+import { clearLS } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -56,7 +58,7 @@ const Navbar = () => {
   // #region Search
   const searchString = useRef();
   // #endregion
-
+  const navigate = useNavigate();
   // #region Avatar Menu Click
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -125,7 +127,12 @@ const Navbar = () => {
                     </ListItemIcon>
                     <ListItemText primary='My account' />
                   </MenuItem>
-                  <MenuItem onClick={() => {}}>
+                  <MenuItem
+                    onClick={() => {
+                      clearLS();
+                      navigate('/login');
+                    }}
+                  >
                     <ListItemIcon>
                       <DeleteIcon fontSize='small' />
                     </ListItemIcon>
