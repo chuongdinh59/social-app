@@ -173,8 +173,11 @@ const Post = ({ post }) => {
           </Popper>
         </div>
       </Box>
-      {type === PostType.SURVEY && <Survey id={id} survey={questions} />}
-      {images?.length > 0 && <ImageGrid images={images} handleToggleModal={handleToggleModal} />}
+      {type === PostType.SURVEY ? (
+        <Survey id={id} survey={questions} />
+      ) : (
+        images?.length > 0 && <ImageGrid images={images} handleToggleModal={handleToggleModal} />
+      )}
       <ImageModal show={showModal} images={images} onClose={handleToggleModal} />
       {/* Card Content */}
       <CardContent>

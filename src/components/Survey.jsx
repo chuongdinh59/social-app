@@ -15,7 +15,7 @@ function Survey({ id, survey }) {
   const [isComplete, setIsComplete] = useState(false);
   const [userResponses, setUserResponses] = useState([]);
 
-  const handleResponseChange = (questionId, response) => {
+  const handleResponseChange = (questionId, questionType, response) => {
     const updatedResponses = [...userResponses];
     const existingResponseIndex = updatedResponses.findIndex((responseObj) => responseObj.questionId === questionId);
 
@@ -24,24 +24,33 @@ function Survey({ id, survey }) {
     } else {
       updatedResponses.push({
         questionId,
+        type: questionType,
         choices: response
       });
     }
     setUserResponses(updatedResponses);
   };
   const handleCreateAnswer = () => {
-    console.log('ORIGINAL', survey);
-    const newSurvey = [...survey];
-    newSurvey.forEach((answer) => {
-      const choiced = userResponses.find((item) => item.questionId === answer.id);
-      answer['choices'] = choiced;
-    });
-    const dataSelected = {
-      id,
-      questions: newSurvey
+    const req = {
+      answers: userResponses.map((answer) => {
+        console.log(answer);
+        return {
+          question: answer.questionId,
+          // (CHECKBOX -> [] else -> String) -> [].toString()
+          result:
+            answer.type === 'CHECKBOX' ? answer.choices.map((choice) => choice.content).join('; ') : answer.choices
+        };
+      })
     };
-    console.log(dataSelected);
-    console.log(userResponses);
+    fetch('http://localhost:8080/api/posts/answer/', {
+      method: 'POST',
+      body: JSON.stringify(req),
+      headers: {
+        'Content-type': 'application/json',
+        Authorization:
+          'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaHVvbmdkcCIsImV4cCI6MTY5NjE0NzA5NywiaWF0IjoxNjkzNTU1MDk3fQ.IobhOgRx11YwYg_qKXcrYa1fMunZzZOxCJ2OBZFRJHmNEOAS42mMU_u0ApByRNdC2TW1D6KhoSZc0gZhkN03Mg'
+      }
+    });
   };
   return (
     <div>
@@ -116,9 +125,9 @@ function CheckboxGroup({ questionId, answers, userResponses, onResponseChange })
         ? existingResponse.choices.filter((choice) => choice !== answer)
         : [...existingResponse.choices, answer];
 
-      onResponseChange(questionId, updatedChoices);
+      onResponseChange(questionId, 'CHECKBOX', updatedChoices);
     } else {
-      onResponseChange(questionId, [answer]);
+      onResponseChange(questionId, 'CHECKBOX', [answer]);
     }
   };
 
@@ -173,7 +182,7 @@ const CompleteSurveyNotification = () => {
 };
 function TextFieldAnswer({ questionId, userResponses, onResponseChange }) {
   const handleTextChange = (text) => {
-    onResponseChange(questionId, text);
+    onResponseChange(questionId, 'TEXT', text);
   };
 
   return (
@@ -186,8 +195,8 @@ function TextFieldAnswer({ questionId, userResponses, onResponseChange }) {
   );
 }
 function MyRadioGroup({ questionId, answers, userResponses, onResponseChange }) {
-  const handleRadioChange = (answer) => {
-    onResponseChange(questionId, answer);
+  const handleRadioChange = (selectedAnswer) => {
+    onResponseChange(questionId, 'RADIO', selectedAnswer);
   };
 
   return (
@@ -206,9 +215,9 @@ function MyRadioGroup({ questionId, answers, userResponses, onResponseChange }) 
           control={
             <Radio
               checked={userResponses?.some(
-                (responseObj) => responseObj.questionId === questionId && responseObj.choices === answer
+                (responseObj) => responseObj.questionId === questionId && responseObj.choices === answer.content
               )}
-              onChange={() => handleRadioChange([answer])}
+              onChange={() => handleRadioChange(answer.content)}
             />
           }
           label={answer.content}
