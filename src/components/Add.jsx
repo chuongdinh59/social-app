@@ -14,9 +14,11 @@ import {
   styled
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import postService from '../apis/postService';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { PostContext } from '../context/PostContext';
 
 const SytledModal = styled(Modal)({
   display: 'flex',
@@ -35,6 +37,7 @@ const Add = () => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState();
   const [fileData, setFileData] = useState([]);
+  const { updatePosts } = useContext(PostContext);
   const openExplorer = () => {
     const fileInput = document.getElementById('file-input');
     if (fileInput) {
@@ -46,15 +49,25 @@ const Add = () => {
       return postService.createPost(body);
     }
   });
-  const sendPost = () => {
-    if (!text && fileData.length === 0) alert('Empty Content ');
-    const formData = new FormData();
-    formData.append('content', text);
-    for (let i = 0; i < fileData.length; i++) {
-      formData.append('images', fileData[i].file);
+  const sendPost = async () => {
+    try {
+      if (!text && fileData.length === 0) {
+        alert('Empty Content ');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('content', text);
+      for (let i = 0; i < fileData.length; i++) {
+        formData.append('images', fileData[i].file);
+      }
+      const { data } = await postMutate.mutateAsync(formData);
+      console.log(data);
+      updatePosts([data]);
+      toast.success('Đằng bài thành công');
+      setOpen(false);
+    } catch {
+      toast.error('Đăng bài không thành công');
     }
-    console.log(...formData);
-    postMutate.mutate(formData);
   };
 
   const handleFileChange = (event) => {

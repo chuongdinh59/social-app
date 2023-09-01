@@ -68,12 +68,12 @@ const Post = ({ post }) => {
     user,
     questions
   } = post;
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState(false);
   const [showIcon, setShowIcon] = useState(false);
   const [page, setPage] = useState(1);
+  const [comments, setComments] = useState([]);
   const handleToggleModal = () => setShowModal(!showModal);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -93,7 +93,6 @@ const Post = ({ post }) => {
   // #endregion
 
   // #region Section for handling comments
-  const [comments, setComments] = useState([]);
   const handleClickOnComment = async () => {
     let res = await commentService.getCommentByPostId(id);
     res?.data && setComments(res.data.data);
@@ -174,8 +173,8 @@ const Post = ({ post }) => {
           </Popper>
         </div>
       </Box>
-      {type === PostType.SURVEY && <Survey survey={questions} />}
-      <ImageGrid images={images} handleToggleModal={handleToggleModal} />
+      {type === PostType.SURVEY && <Survey id={id} survey={questions} />}
+      {images?.length > 0 && <ImageGrid images={images} handleToggleModal={handleToggleModal} />}
       <ImageModal show={showModal} images={images} onClose={handleToggleModal} />
       {/* Card Content */}
       <CardContent>

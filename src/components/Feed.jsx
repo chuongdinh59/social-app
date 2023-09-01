@@ -43,8 +43,8 @@ const Feed = () => {
         endMessage={<p>No more data to load.</p>}
       >
         <ul>
-          {posts?.map((post) => {
-            return <Post key={post.id} post={post} />;
+          {posts?.map((post, index) => {
+            return <Post key={index} post={post} />;
           })}
         </ul>
       </InfiniteScroll>
