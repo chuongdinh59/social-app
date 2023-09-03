@@ -16,6 +16,7 @@ const Feed = () => {
       updatePosts(response?.data || []);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
+      console.log('AA');
       toast.error('error: ', error);
     } finally {
       setLoading(false);
