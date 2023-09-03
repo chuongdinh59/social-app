@@ -24,7 +24,7 @@ export const URL_COMMENT = '/api/comments/';
 export const URL_ADD_REPLY = `${URL_COMMENT}addReply/`;
 
 // Action API
-export const URL_ACTION = '/api/actions/';
+const URL_ACTION = '/api/actions/';
 export const URL_ACTION_ON_POST = `${URL_ACTION}post/`;
 export const URL_ACTION_ON_COMMENT = `${URL_ACTION}comment/`;
 export const URL_ACTION_ON_REPLY = `${URL_ACTION}reply/`;

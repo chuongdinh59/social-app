@@ -1,4 +1,5 @@
-import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
+import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
+import { useMutation } from '@tanstack/react-query';
 import { MoreVert, Share } from '@mui/icons-material';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,19 +28,19 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import commentService from '../apis/commentService';
 import { PostType, Status } from '../mock/post';
 import Comment from './Comment';
 import ImageGrid from './ImageGrid';
 import ImageModal from './ImageModal';
 import Survey from './Survey';
+import actionService from '../apis/actionService';
 import { getProfileFromLS } from '../utils/auth';
 import { Link } from 'react-router-dom';
 
 const Post = ({ post }) => {
   // #region Section for handling Card Headers
-  // const classes = useStyles();
   const {
     id,
     content,
@@ -69,17 +70,36 @@ const Post = ({ post }) => {
   //#endregion
   // #region Section for handling actions on the post
   const [actionOnPost, setActionOnPost] = useState(null);
-  const isHavingAction = Boolean(actionOnPost);
+  const actionMutation = useMutation({
+    mutationFn: (body) => {
+      return actionService.actionOnPost(body);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  });
 
-  const handleReactOnPost = (key) => {
+  const handleReactOnPost = async (key) => {
     setActionOnPost(key);
     setShowIcon(false);
-    console.log('click handleReactOnPost');
   };
-  const handleToggleAction = (event) => {
+  const handleToggleAction = async (event) => {
     console.log('click handleToggleAction');
     setActionOnPost((prev) => (prev ? null : 'like'));
+    console.log(actionOnPost);
   };
+  useEffect(() => {
+    const saveOrUpdateOrDelete = async () => {
+      // This code will run whenever actionOnPost changes.
+      const formData = new FormData();
+      formData.append('post', id);
+      // case when add new -> up like
+      if (actionOnPost) formData.append('action', actionOnPost.toUpperCase());
+      const data = await actionMutation.mutateAsync(formData);
+      console.log(data);
+    };
+    saveOrUpdateOrDelete();
+  }, [actionOnPost]);
   // #endregion
 
   // #region Section for handling comments
@@ -203,32 +223,38 @@ const Post = ({ post }) => {
               }}
               onMouseEnter={() => setShowIcon(true)}
               onMouseLeave={() => setShowIcon(false)}
-              onClick={handleToggleAction}
             >
-              <IconButton aria-label='comments'>
-                {actionOnPost ? (
-                  <>
-                    <FacebookSelector reactions={[actionOnPost]} iconSize={12} variant='facebook' />
-                  </>
-                ) : (
-                  <>
-                    <ThumbUpOffAltIcon /> <Typography fontSize={18}>Thích</Typography>
-                  </>
-                )}
-              </IconButton>
+              <Grid onClick={handleToggleAction}>
+                <IconButton aria-label='comments'>
+                  {actionOnPost ? (
+                    <>
+                      <FacebookSelector reactions={[actionOnPost]} iconSize={12} variant='facebook' />
+                      <FacebookSelectorEmoji
+                        key={actionOnPost}
+                        label={actionOnPost}
+                        icon={icons.find('facebook', actionOnPost)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <ThumbUpOffAltIcon /> <Typography fontSize={18}>Thích</Typography>
+                    </>
+                  )}
+                </IconButton>
+              </Grid>
+              {showIcon && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '-100%',
+                    left: 0,
+                    zIndex: 10
+                  }}
+                >
+                  <FacebookSelector onSelect={handleReactOnPost} iconSize={35} />
+                </Box>
+              )}
             </Grid>
-            {showIcon && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '-100%',
-                  left: 0,
-                  zIndex: 10
-                }}
-              >
-                <FacebookSelector onSelect={handleReactOnPost} iconSize={35} />
-              </Box>
-            )}
             <Grid
               xs={4}
               item

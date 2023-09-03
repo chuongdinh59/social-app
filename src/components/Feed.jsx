@@ -13,7 +13,7 @@ const Feed = () => {
     setLoading(true);
     try {
       const response = await postService.getPosts(page);
-      updatePosts(response?.data || []);
+      updatePosts(response?.data?.posts || []);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
       toast.error('error: ', error);
