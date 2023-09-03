@@ -27,7 +27,6 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import commentService from '../apis/commentService';
 import { PostType, Status } from '../mock/post';
@@ -36,26 +35,11 @@ import ImageGrid from './ImageGrid';
 import ImageModal from './ImageModal';
 import Survey from './Survey';
 import { getProfileFromLS } from '../utils/auth';
-const useStyles = makeStyles((theme) => ({
-  boxContainer: {
-    position: 'relative',
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-    justifyContent: 'center',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '-100%',
-      left: 0,
-      width: '220%',
-      height: '100%',
-      boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-      pointerEvents: 'none'
-    }
-  }
-}));
+import { Link } from 'react-router-dom';
+
 const Post = ({ post }) => {
   // #region Section for handling Card Headers
-  const classes = useStyles();
+  // const classes = useStyles();
   const {
     id,
     content,
@@ -84,11 +68,17 @@ const Post = ({ post }) => {
   const handleDeletePost = () => {};
   //#endregion
   // #region Section for handling actions on the post
-  const [actionOnPost, setActionOnPost] = useState('');
+  const [actionOnPost, setActionOnPost] = useState(null);
   const isHavingAction = Boolean(actionOnPost);
 
-  const handleClickOnAction = (type) => {
-    setActionOnPost(type);
+  const handleReactOnPost = (key) => {
+    setActionOnPost(key);
+    setShowIcon(false);
+    console.log('click handleReactOnPost');
+  };
+  const handleToggleAction = (event) => {
+    console.log('click handleToggleAction');
+    setActionOnPost((prev) => (prev ? null : 'like'));
   };
   // #endregion
 
@@ -132,25 +122,28 @@ const Post = ({ post }) => {
     <Card sx={{ margin: 5 }}>
       <Box>
         <CardHeader
-          avatar={<Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={user.avatar} />}
+          avatar={
+            <Link to='/profile'>
+              <Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={user.avatar} />
+            </Link>
+          }
           action={
             <IconButton aria-label='settings' onClick={handleMenuClick}>
               <MoreVert />
             </IconButton>
           }
-          title={user.displayName}
+          title={
+            <Link to='/profile' style={{ textDecoration: 'none', color: 'black' }}>
+              <Typography variant='h6' fontWeight='600' fontSize={18}>
+                {user.displayName}
+              </Typography>{' '}
+            </Link>
+          }
           subheader={createdDate}
         />
+
         <div>
-          <Popper
-            sx={{
-              zIndex: 10
-            }}
-            open={open}
-            anchorEl={anchorEl}
-            transition
-            disablePortal
-          >
+          <Popper sx={{ zIndex: 10 }} open={open} anchorEl={anchorEl} transition disablePortal>
             {({ TransitionProps, placement }) => (
               <Grow
                 {...TransitionProps}
@@ -158,7 +151,7 @@ const Post = ({ post }) => {
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleMenuClose}>
-                    <MenuList autoFocusItem={open} id='menu-list-grow'>
+                    <MenuList autoFocusItem={open} sx={{ padding: 0 }}>
                       <MenuItem onClick={handleDeletePost}>
                         <ListItemIcon>
                           <DeleteIcon fontSize='small' />
@@ -173,40 +166,57 @@ const Post = ({ post }) => {
           </Popper>
         </div>
       </Box>
-      {type === PostType.SURVEY ? (
-        <Survey id={id} survey={questions} />
-      ) : (
-        images?.length > 0 && <ImageGrid images={images} handleToggleModal={handleToggleModal} />
-      )}
       <ImageModal show={showModal} images={images} onClose={handleToggleModal} />
       {/* Card Content */}
-      <CardContent>
-        <Typography variant='body2' color='text.secondary'>
-          {content}
-        </Typography>
-        <Box
-          sx={{
-            position: 'relative'
-          }}
-        >
-          <FacebookCounter />
-        </Box>
+      <CardContent sx={{ padding: 0, paddingBottom: 1 }}>
+        {type === PostType.SURVEY ? (
+          <Survey id={id} survey={questions} />
+        ) : (
+          images?.length > 0 && <ImageGrid images={images} handleToggleModal={handleToggleModal} />
+        )}
+        <React.Fragment>
+          <Typography color='text.secondary' style={{ marginLeft: 10, paddingTop: 5, fontSize: 18 }}>
+            {content}
+          </Typography>
+          <Box
+            sx={{
+              position: 'relative'
+            }}
+          ></Box>
+        </React.Fragment>
       </CardContent>
-
-      <CardActions>
-        <Grid container>
-          <Grid
-            item
-            xs={4}
-            container
-            justify='center'
-            alignItems='center'
-            position='relative'
-            // style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
-            onMouseEnter={() => setShowIcon(true)}
-            onMouseLeave={() => setShowIcon(false)}
-            className={classes.boxContainer}
-          >
+      {/* Card Action */}
+      <Box>
+        <Box sx={{ marginLeft: '10px' }}>
+          <FacebookCounter counters={count_action} />
+        </Box>
+        <CardActions>
+          <Grid container style={{ position: 'relative' }}>
+            <Grid
+              xs={4}
+              item
+              style={{
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                justifyContent: 'center',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={() => setShowIcon(true)}
+              onMouseLeave={() => setShowIcon(false)}
+              onClick={handleToggleAction}
+            >
+              <IconButton aria-label='comments'>
+                {actionOnPost ? (
+                  <>
+                    <FacebookSelector reactions={[actionOnPost]} iconSize={12} variant='facebook' />
+                  </>
+                ) : (
+                  <>
+                    <ThumbUpOffAltIcon /> <Typography fontSize={18}>Thích</Typography>
+                  </>
+                )}
+              </IconButton>
+            </Grid>
             {showIcon && (
               <Box
                 sx={{
@@ -216,43 +226,40 @@ const Post = ({ post }) => {
                   zIndex: 10
                 }}
               >
-                <FacebookSelector
-                  onSelect={(key) => {
-                    console.log('react:', key.toUpperCase());
-                  }}
-                />
+                <FacebookSelector onSelect={handleReactOnPost} iconSize={35} />
               </Box>
             )}
-            <IconButton aria-label='comments'>
-              <ThumbUpOffAltIcon /> <Typography variant='h6'>Thích</Typography>
-            </IconButton>
+            <Grid
+              xs={4}
+              item
+              style={{
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                justifyContent: 'center',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <IconButton aria-label='comments' onClick={handleClickOnComment}>
+                <CommentOutlinedIcon /> <Typography fontSize={18}>Bình luận</Typography>
+              </IconButton>
+            </Grid>
+            <Grid
+              xs={4}
+              item
+              style={{
+                boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                justifyContent: 'center',
+                textAlign: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <IconButton aria-label='share'>
+                <Share /> <Typography fontSize={18}>Chia sẻ</Typography>
+              </IconButton>
+            </Grid>
           </Grid>
-          <Grid
-            item
-            xs={4}
-            container
-            justify='center'
-            alignItems='center'
-            style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
-          >
-            <IconButton aria-label='comments' onClick={handleClickOnComment}>
-              <CommentOutlinedIcon /> <Typography variant='h6'>Bình luận</Typography>
-            </IconButton>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            container
-            justify='center'
-            alignItems='center'
-            style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)', justifyContent: 'center' }}
-          >
-            <IconButton aria-label='share'>
-              <Share /> <Typography variant='h6'>Chia sẻ</Typography>
-            </IconButton>
-          </Grid>
-        </Grid>
-      </CardActions>
+        </CardActions>
+      </Box>
       <Divider />
       {/* Comment section */}
       <Box display={isCommentSectionShow ? 'block' : 'none'}>
