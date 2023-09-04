@@ -51,7 +51,8 @@ const Post = ({ post }) => {
     modifiedDate,
     type,
     user,
-    questions
+    questions,
+    currentAction
   } = post;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -69,7 +70,7 @@ const Post = ({ post }) => {
   const handleDeletePost = () => {};
   //#endregion
   // #region Section for handling actions on the post
-  const [actionOnPost, setActionOnPost] = useState(null);
+  const [actionOnPost, setActionOnPost] = useState(currentAction?.toLowerCase());
   const actionMutation = useMutation({
     mutationFn: (body) => {
       return actionService.actionOnPost(body);
