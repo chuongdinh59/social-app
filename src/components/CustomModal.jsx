@@ -16,7 +16,6 @@ const style = {
 };
 
 export default function CustomModal({ open, handleClose, children }) {
-  console.log(open);
   return (
     <div>
       <Modal
