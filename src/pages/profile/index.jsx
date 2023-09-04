@@ -3,6 +3,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Avatar,
+  Box,
   Button,
   Container,
   FormControl,
@@ -15,7 +16,8 @@ import {
   Skeleton,
   Stack,
   TextField,
-  Typography
+  Typography,
+  createTheme
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -27,6 +29,45 @@ import { getProfileFromLS, setProfileToLS } from '../../utils/auth';
 import { useMutation } from '@tanstack/react-query';
 import userService from '../../apis/userService';
 import Add from '../../components/Add';
+import { ThemeProvider } from '@emotion/react';
+const friends = [
+  {
+    img: 'img1.jpg',
+    name: 'John Doe'
+  },
+  {
+    img: 'img2.jpg',
+    name: 'Jane Smith'
+  },
+  {
+    img: 'img3.jpg',
+    name: 'Michael Johnson'
+  },
+  {
+    img: 'img4.jpg',
+    name: 'Emily Davis'
+  },
+  {
+    img: 'img5.jpg',
+    name: 'David Wilson'
+  },
+  {
+    img: 'img6.jpg',
+    name: 'Sarah Brown'
+  },
+  {
+    img: 'img7.jpg',
+    name: 'Chris Lee'
+  },
+  {
+    img: 'img8.jpg',
+    name: 'Olivia Taylor'
+  },
+  {
+    img: 'img9.jpg',
+    name: 'Daniel Martinez'
+  }
+];
 const Profile = () => {
   let user = getProfileFromLS();
   const [posts, setPosts] = useState([]);
@@ -121,7 +162,13 @@ const Profile = () => {
     fetchData();
   }, []);
   return (
-    <>
+    <ThemeProvider
+      theme={createTheme({
+        palette: {
+          mode: 'light'
+        }
+      })}
+    >
       <Add />
       <CustomModal open={isShowSetting} handleClose={handleClose}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -281,6 +328,33 @@ const Profile = () => {
               <Typography variant='h5' sx={{ marginTop: 3 }}>
                 Friends
               </Typography>
+
+              <Grid
+                container
+                spacing={1}
+                mt={5}
+                padding={2}
+                style={{
+                  boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px;'
+                }}
+              >
+                {friends.map((item) => {
+                  return (
+                    <Grid item xs={4}>
+                      <Box
+                        component='img'
+                        alt='The house from the offer.'
+                        src='https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=1'
+                        style={{
+                          borderRadius: '5px',
+                          boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px'
+                        }}
+                      />
+                      <Typography sx={{ marginTop: 3, textAlign: 'center' }}>{item.name}</Typography>
+                    </Grid>
+                  );
+                })}
+              </Grid>
             </Grid>
             <Grid item xs={8}>
               <Paper sx={{ padding: 1 }}>
@@ -313,7 +387,7 @@ const Profile = () => {
           </Grid>
         </Paper>
       </Container>
-    </>
+    </ThemeProvider>
   );
 };
 
