@@ -62,7 +62,7 @@ const Add = () => {
       }
       const { data } = await postMutate.mutateAsync(formData);
       console.log(data);
-      updatePosts([data]);
+      updatePosts([data], true);
       toast.success('Đằng bài thành công');
       setOpen(false);
     } catch {
