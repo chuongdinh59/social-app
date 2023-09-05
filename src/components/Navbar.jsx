@@ -18,9 +18,11 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import logo from '../assets/surface_logo.png';
 import { clearLS } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
+import UserContext from '../context/UserContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)({
@@ -71,6 +73,7 @@ const Navbar = () => {
   // #endregion
 
   // #region User ?
+  const { profile, setUser } = useContext(UserContext);
   // #endregion
   return (
     <AppBar sx={{ position: 'sticky', top: 0, left: 0, right: 0, width: '100%', height: '64px' }}>
@@ -94,14 +97,14 @@ const Navbar = () => {
           </Badge>
           <Avatar
             sx={{ width: 30, height: 30, cursor: 'pointer' }}
-            src='https://images.pexels.com/photos/846741/pexels-photo-846741.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+            src={profile.avatar}  
             onClick={handleAvatarClick}
           />
         </Icons>
         <UserBox onClick={handleAvatarClick}>
           <Avatar
             sx={{ width: 30, height: 30 }}
-            src='https://images.pexels.com/photos/846741/pexels-photo-846741.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
+            src={profile.avatar}
           />
           <Typography variant='span'>John</Typography>
         </UserBox>

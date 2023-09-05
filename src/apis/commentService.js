@@ -1,4 +1,4 @@
-import { URL_ADD_REPLY, URL_COMMENT } from '../constant/url';
+import { URL_ADD_REPLY, URL_COMMENT, URL_DELETE_COMMENT, URL_DELETE_REPLY } from '../constant/url';
 import http from '../utils/http';
 const commentService = {
   // comment: {
@@ -22,6 +22,17 @@ const commentService = {
         'Content-Type': 'application/json'
       }
     });
+  },
+  /**
+   * URL: /api/comments/{id}/delete/
+   * @param {id} id 
+   * @returns 
+   */
+  deleteComment(id) {
+    return http.delete(URL_DELETE_COMMENT(id));
+  },
+  deleteReply(id) {
+    return http.delete(URL_DELETE_REPLY(id));
   },
   getCommentByPostId(postId, page = 1) {
     return http.get(`${URL_COMMENT}?postId=${postId}&page=${page}`);
