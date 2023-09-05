@@ -1,3 +1,4 @@
+import { AuthRoute } from '../components/AuthRoute';
 import PageNotFound from '../pages/404';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
@@ -8,8 +9,22 @@ import Profile from '../pages/profile';
 export const routers = [
   { path: '/', element: <Home /> },
   { path: 'login', element: <Login /> },
-  { path: 'profile', element: <Profile /> },
-  { path: 'chat', element: <Chat /> },
+  {
+    path: 'profile',
+    element: <AuthRoute redirect='/login' />,
+    children: [
+      { index: true, element: <Profile /> } // Use "index: true" for the default nested route
+      // Add other nested routes for the profile page if needed
+    ]
+  },
+  {
+    path: 'chat',
+    element: <AuthRoute redirect='/login' />,
+    children: [
+      { index: true, element: <Chat /> } // Use "index: true" for the default nested route
+      // Add other nested routes for the chat page if needed
+    ]
+  },
   { path: 'register', element: <Register /> },
   { path: '*', element: <PageNotFound /> }
 ];

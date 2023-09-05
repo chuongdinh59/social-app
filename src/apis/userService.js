@@ -1,4 +1,4 @@
-import { URL_USER, URL_REGISTER, URL_CURRENT_USER } from '../constant/url';
+import { URL_CURRENT_USER, URL_REGISTER, URL_USER } from '../constant/url';
 import http from '../utils/http';
 const userService = {
   getCurrentUser() {
@@ -6,6 +6,13 @@ const userService = {
   },
   registerAccount(body) {
     return http.post(URL_REGISTER, body, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  updateAccount(body) {
+    return http.post(URL_USER, body, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

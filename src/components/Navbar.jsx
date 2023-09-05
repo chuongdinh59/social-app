@@ -1,4 +1,4 @@
-import { Mail, Notifications, Pets } from '@mui/icons-material';
+import { AccountBox, Mail, Notifications, Pets } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   AppBar,
@@ -23,6 +23,7 @@ import logo from '../assets/surface_logo.png';
 import { clearLS } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/UserContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -117,12 +118,14 @@ const Navbar = () => {
             <Paper>
               <ClickAwayListener onClickAway={handleAvatarClose}>
                 <MenuList autoFocusItem={open} id='menu-list-grow'>
-                  <MenuItem onClick={() => {}}>
-                    <ListItemIcon>
-                      <DeleteIcon fontSize='small' />
-                    </ListItemIcon>
-                    <ListItemText primary='Profile' />
-                  </MenuItem>
+                  <Link to={'/profile'}>
+                    <MenuItem onClick={() => {}}>
+                      <ListItemIcon>
+                        <AccountBox fontSize='small' />
+                      </ListItemIcon>
+                      <ListItemText primary='Profile' />
+                    </MenuItem>
+                  </Link>
                   <MenuItem onClick={() => {}}>
                     <ListItemIcon>
                       <DeleteIcon fontSize='small' />
