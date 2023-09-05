@@ -317,7 +317,7 @@ const Profile = () => {
             </Grid>
           </Grid>
           <Typography variant='body1' color='text.secondary' align='center' gutterBottom>
-            @{user.alumniId}
+            @{user.displayName}
           </Typography>
 
           <Grid container spacing={2}>
@@ -335,12 +335,12 @@ const Profile = () => {
                 mt={5}
                 padding={2}
                 style={{
-                  boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px;'
+                  boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px'
                 }}
               >
-                {friends.map((item) => {
+                {friends.map((item, index) => {
                   return (
-                    <Grid item xs={4}>
+                    <Grid item xs={4} key={index}>
                       <Box
                         component='img'
                         alt='The house from the offer.'

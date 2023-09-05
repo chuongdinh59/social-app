@@ -4,8 +4,9 @@ export const PostContext = createContext();
 export function PostProvider({ children }) {
   const [posts, setPosts] = useState([]);
 
-  const updatePosts = (newPosts) => {
-    setPosts((prevPosts) => [...newPosts, ...prevPosts]);
+  const updatePosts = (newPosts, isAdd = false) => {
+    if (isAdd) setPosts((prevPosts) => [...newPosts, ...prevPosts]);
+    else setPosts((prevPosts) => [...prevPosts, ...newPosts]);
   };
   const value = {
     posts,

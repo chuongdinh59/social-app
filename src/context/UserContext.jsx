@@ -7,8 +7,6 @@ export function UserProvider({ children }) {
   const value = {
     profile: user,
     setUser
-
-    // ... some things
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
