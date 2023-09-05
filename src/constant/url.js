@@ -22,6 +22,8 @@ export const URL_POST = '/api/posts/';
 // Comment API
 export const URL_COMMENT = '/api/comments/';
 export const URL_ADD_REPLY = `${URL_COMMENT}addReply/`;
+export const URL_DELETE_COMMENT = (id) => `${URL_COMMENT}${id}/delete/`;
+export const URL_DELETE_REPLY = (id) => `${URL_COMMENT}${id}/deleteSub/`;
 
 // Action API
 const URL_ACTION = '/api/actions/';

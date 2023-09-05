@@ -85,9 +85,7 @@ const Post = ({ post }) => {
     setShowIcon(false);
   };
   const handleToggleAction = async (event) => {
-    console.log('click handleToggleAction');
     setActionOnPost((prev) => (prev ? null : 'like'));
-    console.log(actionOnPost);
   };
   useEffect(() => {
     const saveOrUpdateOrDelete = async () => {
@@ -97,7 +95,6 @@ const Post = ({ post }) => {
       // case when add new -> up like
       if (actionOnPost) formData.append('action', actionOnPost.toUpperCase());
       const data = await actionMutation.mutateAsync(formData);
-      console.log(data);
     };
     saveOrUpdateOrDelete();
   }, [actionOnPost]);
@@ -115,8 +112,9 @@ const Post = ({ post }) => {
     setComment(e.target.value);
   };
 
-  const handleDeleteComent = (id) => {
+  const handleDeleteComent = async (id) => {
     setComments((pre) => pre.filter((i) => i.id !== id));
+    const data = await commentService.deleteComment(id);
   };
   // Test user
   const handleAddComment = async () => {
@@ -295,7 +293,7 @@ const Post = ({ post }) => {
         </Button>
         <CardContent>
           {comments.map((comment, index) => (
-            <Comment handleDelete={handleDeleteComent} comment={comment} key={index} />
+            <Comment postUser={user} handleDelete={handleDeleteComent} comment={comment} key={index} />
           ))}
         </CardContent>
         <CardContent>
