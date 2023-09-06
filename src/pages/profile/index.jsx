@@ -77,6 +77,7 @@ const Profile = () => {
   const [displayName, setDisplayName] = useState(user.displayName || ''); // Default display name
   const [slug, setSlug] = useState(user.slug || '');
   const [isShowEdit, setIsShowEdit] = useState(false);
+  const [isEndPost, setIsEndPost] = useState(false);
   // #region Avatar
   const [isShowAvatarModal, setIsShowAvatarModal] = useState(false);
   const avatarFile = useRef();
@@ -146,6 +147,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const response = await postService.getPosts(page, user.id);
+      response?.data.posts && setIsEndPost(true);
       setPosts((prevPosts) => [...prevPosts, ...(response?.data?.posts || [])]);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
@@ -384,12 +386,19 @@ const Profile = () => {
                   next={fetchData}
                   hasMore={true} // Replace with a condition based on your data source
                   loader={
-                    <Stack spacing={1}>
-                      <Skeleton variant='text' height={100} />
-                      <Skeleton variant='text' height={20} />
-                      <Skeleton variant='text' height={20} />
-                      <Skeleton variant='rectangular' height={300} />
-                    </Stack>
+                    isEndPost ? (
+                      <Alert severity='info'>
+                        <AlertTitle>Thông báo</AlertTitle>
+                        Hết bài — <strong>check it out!</strong>
+                      </Alert>
+                    ) : (
+                      <Stack spacing={1}>
+                        <Skeleton variant='text' height={100} />
+                        <Skeleton variant='text' height={20} />
+                        <Skeleton variant='text' height={20} />
+                        <Skeleton variant='rectangular' height={300} />
+                      </Stack>
+                    )
                   }
                   endMessage={<p>No more data to load.</p>}
                 >

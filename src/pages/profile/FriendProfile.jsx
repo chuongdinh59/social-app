@@ -52,10 +52,12 @@ const FriendProfile = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [isEnd, setIsEnd] = useState(false);
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await postService.getPosts(page, params.id);
+      response?.data.posts && setIsEnd(true);
       setPosts((prevPosts) => [...prevPosts, ...(response?.data?.posts || [])]);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
@@ -189,12 +191,19 @@ const FriendProfile = () => {
                   next={fetchData}
                   hasMore={true} // Replace with a condition based on your data source
                   loader={
-                    <Stack spacing={1}>
-                      <Skeleton variant='text' height={100} />
-                      <Skeleton variant='text' height={20} />
-                      <Skeleton variant='text' height={20} />
-                      <Skeleton variant='rectangular' height={300} />
-                    </Stack>
+                    isEnd ? (
+                      <Alert severity='info'>
+                        <AlertTitle>Thông báo</AlertTitle>
+                        Hết bài — <strong>check it out!</strong>
+                      </Alert>
+                    ) : (
+                      <Stack spacing={1}>
+                        <Skeleton variant='text' height={100} />
+                        <Skeleton variant='text' height={20} />
+                        <Skeleton variant='text' height={20} />
+                        <Skeleton variant='rectangular' height={300} />
+                      </Stack>
+                    )
                   }
                   endMessage={<p>No more data to load.</p>}
                 >
