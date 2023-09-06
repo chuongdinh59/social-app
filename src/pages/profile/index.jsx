@@ -2,6 +2,8 @@ import { ThemeProvider } from '@emotion/react';
 import { AccountCircle, Settings } from '@mui/icons-material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {
+  Alert,
+  AlertTitle,
   Avatar,
   Box,
   Button,
