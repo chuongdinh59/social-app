@@ -27,7 +27,9 @@ export const URL_POST = '/api/posts/';
 export const URL_POST_WITH_SLUG = (slug) => {
   return `${URL_POST}slug/${slug}/`;
 };
-
+export const URL_TOGGLE_BLOCK_COMMET = (id) => {
+  return `${URL_POST}block-comment/${id}`;
+};
 // Comment API
 export const URL_COMMENT = '/api/comments/';
 export const URL_ADD_REPLY = `${URL_COMMENT}addReply/`;
