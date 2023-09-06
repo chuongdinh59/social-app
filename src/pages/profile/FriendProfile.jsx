@@ -7,6 +7,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { toast } from 'react-toastify';
 import postService from '../../apis/postService';
 import Post from '../../components/Post';
+import { useParams } from 'react-router-dom';
+import Navbar from '../../components/Navbar';
 const friends = [
   {
     img: 'img1.jpg',
@@ -46,8 +48,12 @@ const friends = [
   }
 ];
 const FriendProfile = () => {
+  /**
+   * params {userId}
+   */
   const params = useQueryParams();
-  console.log(params);
+  const { slug } = useParams();
+  // User của trang profile
   const [user, setUser] = useState({});
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -56,7 +62,7 @@ const FriendProfile = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await postService.getPosts(page, params.id);
+      const response = await postService.getPosts(page, { userId: user.id, slug });
       response?.data.posts && setIsEnd(true);
       setPosts((prevPosts) => [...prevPosts, ...(response?.data?.posts || [])]);
       setPage((prevPage) => prevPage + 1);
@@ -66,6 +72,9 @@ const FriendProfile = () => {
       setLoading(false);
     }
   };
+  /**
+   * lấy user Profile
+   */
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -74,7 +83,10 @@ const FriendProfile = () => {
       } catch (error) {}
     };
     fetchUser();
-  }, [params?.id, params.slug]);
+  }, [params?.userId, slug]);
+  /**
+   * Get posts
+   */
   useEffect(() => {
     fetchData();
   }, []);
@@ -84,6 +96,7 @@ const FriendProfile = () => {
         palette: { mode: 'light' }
       })}
     >
+      <Navbar />
       <Container>
         <Paper sx={{ padding: 1 }}>
           {/* Cover Photo */}

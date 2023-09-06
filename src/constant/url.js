@@ -22,6 +22,9 @@ export const URL_USER_BY_ID_OR_SLUG = (body) => {
 
 // Post API
 export const URL_POST = '/api/posts/';
+export const URL_POST_WITH_SLUG = (slug) => {
+  return `${URL_POST}slug/${slug}/`;
+}
 
 // Comment API
 export const URL_COMMENT = '/api/comments/';
