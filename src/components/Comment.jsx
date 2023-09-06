@@ -1,8 +1,8 @@
-import { Reply, ThumbDown, ThumbUp } from '@mui/icons-material';
+import { Reply } from '@mui/icons-material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
 import {
   Avatar,
   Box,
@@ -11,20 +11,25 @@ import {
   IconButton,
   InputAdornment,
   MenuList,
+  MenuItem,
   TextField,
-  Typography
+  Typography,
+  Paper,
+  ClickAwayListener,
+  Popper,
+  Grow
 } from '@mui/material';
-import { Paper, ClickAwayListener, Popper, Grow } from '@mui/material';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import { useContext, useState } from 'react';
 import commentService from '../apis/commentService';
 import { getProfileFromLS } from '../utils/auth';
 import { Link } from 'react-router-dom';
 import UserContext from '../context/UserContext';
+import ReplyComment from './ReplyComment';
+import  { dateFormatFromString } from '../utils/dateFormat';
+
 const Comment = ({ postUser, comment, handleDelete }) => {
   // #region get user profile
-  const { profile, setUser } = useContext(UserContext);
+  const { profile } = useContext(UserContext);
   // #endregion
   const [reply, setReply] = useState('');
   const [replies, setReplies] = useState([]);
@@ -40,14 +45,13 @@ const Comment = ({ postUser, comment, handleDelete }) => {
     setAnchorElForClick(null);
   };
   // #endregion
-
   // #region delete comment
   const handleDeleteComment = async () => {
-    console.log("111");
     handleDelete(comment.id);
     handleClose();
   };
   // #endregion
+  // #region Reply section
   const handleReplyChange = (e) => {
     setReply(e.target.value);
   };
@@ -68,26 +72,22 @@ const Comment = ({ postUser, comment, handleDelete }) => {
   const handleGetMoreReplies = async () => {
     const replies = await commentService.getRepliesByCommentId(comment.id, page + 1);
     replies?.data?.data && setReplies((pre) => [...pre, ...replies.data.data]);
-    console.log(replies);
-  };
-  const handleDeleteReply = (id) => {
-    setReplies((pre) => pre.filter((i) => i.id !== id));
   };
   const handleShowReply = async (page) => {
     setShowReplies(true);
     const replies = await commentService.getRepliesByCommentId(comment.id, page);
     replies?.data && setReplies(replies.data.data);
   };
-
+  // #endregion
+  // #region handle Reply delete ...
+  const handleDeleteReply = async (id) => {
+    setReplies((pre) => pre.filter((i) => i.id !== id));
+    await commentService.deleteReply(id);
+  };
+  // #endregion
   return (
     <>
-      <Box
-        sx={{
-          marginTop: '10px',
-          alignItems: 'center',
-          display: 'flex'
-        }}
-      >
+      <Box sx={{ marginTop: '10px', alignItems: 'center', display: 'flex' }}>
         <Link to='/profile' style={{ marginRight: '10px' }}>
           <Avatar src={comment.user.avatar} alt={comment.user.displayName} />
         </Link>
@@ -142,17 +142,10 @@ const Comment = ({ postUser, comment, handleDelete }) => {
             )}
           </Box>
           <Box>
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '60%',
-                left: '50%',
-                zIndex: 10
-              }}
-            >
+            <Box sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}>
               <FacebookSelector variant='facebook' iconSize={12} />
             </Box>
-            {comment.createdDate}
+            {dateFormatFromString(comment.createdDate)}
             <IconButton size='small' aria-label='reply' onClick={() => setShowReplies(!showReplies)}>
               <Reply />
             </IconButton>
@@ -166,66 +159,15 @@ const Comment = ({ postUser, comment, handleDelete }) => {
       {/* <Typography variant='caption'>{replies.length}</Typography> */}
       {/* Reply section */}
       {showReplies && (
-        <Box
-          sx={{
-            width: '95%',
-            marginLeft: '5%'
-          }}
-        >
+        <Box sx={{ width: '95%', marginLeft: '5%' }}>
           <Button onClick={() => handleGetMoreReplies()} variant='text'>
             Xem thêm bình luận
           </Button>
-          {replies?.map((reply, index) => {
-            return (
-              <Box
-                key={`${reply.id}${index}`}
-                display='flex'
-                alignItems='center'
-                sx={{
-                  marginTop: '30px'
-                }}
-              >
-                <Avatar src={reply.user.avatar} alt={reply.user.displayName} />
-                <Typography variant='body2' color='text.secondary' sx={{ marginLeft: 2 }}>
-                  <strong
-                    style={{
-                      fontWeight: 700,
-                      fontSize: '16px'
-                    }}
-                  >
-                    {reply.user.displayName}
-                  </strong>
-                  : {reply.content}
-                </Typography>
-                <div>
-                  <IconButton aria-controls='dropdown-menu' aria-haspopup='true' onClick={handleClickAnchorEl}>
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id='dropdown-menu'
-                    anchorEl={anchorElForClick}
-                    open={Boolean(anchorElForClick)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={handleClose}>Edit</MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleDeleteReply(reply.id);
-                        handleClose();
-                      }}
-                    >
-                      Delete
-                    </MenuItem>
-                  </Menu>
-                </div>
-              </Box>
-            );
-          })}
-
+          {replies?.map((reply, index) => (
+            <ReplyComment postUser={postUser} reply={reply} key={index} handleDelete={handleDeleteReply} />
+          ))}
           <TextField
-            sx={{
-              width: '95%'
-            }}
+            sx={{ width: '95%' }}
             label='Reply'
             value={reply}
             onChange={handleReplyChange}
