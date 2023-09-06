@@ -8,8 +8,12 @@ const postService = {
       }
     });
   },
-  getPosts(pageNumber) {
-    return http.get(`${URL_POST}?page=${pageNumber}`);
+  getPosts(pageNumber, userId = null) {
+    let url = `${URL_POST}?page=${pageNumber}`;
+    if (!!userId) {
+      url = `${url}&userId=${userId}`;
+    }
+    return http.get(url);
   }
 };
 
