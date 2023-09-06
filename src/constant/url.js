@@ -20,11 +20,13 @@ export const URL_USER_BY_ID_OR_SLUG = (body) => {
   return `${URL_USER}?${param}`;
 };
 
+export const URL_ACTIVE_LECTURE = `${URL_USER}lecture-active/`;
+
 // Post API
 export const URL_POST = '/api/posts/';
 export const URL_POST_WITH_SLUG = (slug) => {
   return `${URL_POST}slug/${slug}/`;
-}
+};
 
 // Comment API
 export const URL_COMMENT = '/api/comments/';

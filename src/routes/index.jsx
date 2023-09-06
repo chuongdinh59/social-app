@@ -1,5 +1,6 @@
 import { AuthRoute } from '../components/AuthRoute';
 import PageNotFound from '../pages/404';
+import ChangePassword from '../pages/auth/ChangePassword';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import Chat from '../pages/chat';
@@ -11,6 +12,10 @@ export const routers = [
   { path: '/', element: <Home /> },
   { path: 'user/:slug', element: <FriendProfile /> },
   { path: 'login', element: <Login /> },
+  {
+    path: 'change-password',
+    element: <ChangePassword />
+  },
   {
     path: 'profile',
     element: <AuthRoute redirect='/login' />,
