@@ -1,4 +1,4 @@
-import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
+import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
 import { MoreVert, Share } from '@mui/icons-material';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -44,7 +44,7 @@ const Post = ({ post }) => {
   const {
     id,
     content,
-    count_action,
+    countAction,
     createdDate,
     imagePostSet: images,
     lockComment,
@@ -106,7 +106,6 @@ const Post = ({ post }) => {
     res?.data && setComments(res.data.data);
     setIsCommentSectionShow((current) => !current);
   };
-
   const [comment, setComment] = useState([]);
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -199,8 +198,9 @@ const Post = ({ post }) => {
       </CardContent>
       {/* Card Action */}
       <Box>
-        <Box sx={{ marginLeft: '10px' }}>
-          <FacebookCounter counters={count_action} />
+        <Box sx={{ marginLeft: '10px', marginRight: '70%', display: 'flex' }}>
+          <Typography >100</Typography>
+          <FacebookSelector reactions={['like', 'haha']} iconSize={12} style={{ width: '0'}} />
         </Box>
         <CardActions>
           <Grid container style={{ position: 'relative' }}>
@@ -221,11 +221,6 @@ const Post = ({ post }) => {
                   {actionOnPost ? (
                     <>
                       <FacebookSelector reactions={[actionOnPost]} iconSize={12} variant='facebook' />
-                      <FacebookSelectorEmoji
-                        key={actionOnPost}
-                        label={actionOnPost}
-                        icon={icons.find('facebook', actionOnPost)}
-                      />
                     </>
                   ) : (
                     <>

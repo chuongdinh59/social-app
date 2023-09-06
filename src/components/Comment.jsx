@@ -2,7 +2,8 @@ import { Reply } from '@mui/icons-material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
 import {
   Avatar,
   Box,
@@ -19,13 +20,14 @@ import {
   Popper,
   Grow
 } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import commentService from '../apis/commentService';
 import { getProfileFromLS } from '../utils/auth';
 import { Link } from 'react-router-dom';
 import UserContext from '../context/UserContext';
 import ReplyComment from './ReplyComment';
-import  { dateFormatFromString } from '../utils/dateFormat';
+import { dateFormatFromString } from '../utils/dateFormat';
+import actionService from '../apis/actionService';
 
 const Comment = ({ postUser, comment, handleDelete }) => {
   // #region get user profile
@@ -37,6 +39,28 @@ const Comment = ({ postUser, comment, handleDelete }) => {
   const [page, setPage] = useState(1);
   const [anchorElForClick, setAnchorElForClick] = useState(null);
   const open = Boolean(anchorElForClick);
+  // #region action handlers
+  const [actionOnComment, setActionOnComment] = useState(comment?.currentAction);
+  const [showIcon, setShowIcon] = useState(false);
+  const handleReactOnComment = (key) => {
+    setActionOnComment(key);
+    setShowIcon(false);
+  };
+  const handleToggleAction = async (event) => {
+    setActionOnComment((prev) => (prev ? null : 'like'));
+  };
+  useEffect(() => {
+    const saveOrUpdateOrDelete = async () => {
+      // This code will run whenever actionOnComment changes.
+      const formData = new FormData();
+      formData.append('comment', comment.id);
+      // case when add new -> up like
+      if (actionOnComment) formData.append('action', actionOnComment.toUpperCase());
+      const data = await actionService.actionOnComment(formData);
+    };
+    saveOrUpdateOrDelete();
+  }, [actionOnComment]);
+  // #endregion
   // #region click to open menu delete or ...
   const handleClickAnchorEl = (event) => {
     setAnchorElForClick(event.currentTarget);
@@ -123,15 +147,13 @@ const Comment = ({ postUser, comment, handleDelete }) => {
                             open={Boolean(anchorElForClick)}
                             onClose={handleClose}
                           >
-                            <>
-                              <MenuItem onClick={handleClose} sx={{ paddingY: 0 }}>
-                                Edit
-                              </MenuItem>
-                              <Divider sx={{ marginX: 0 }} />
-                              <MenuItem onClick={handleDeleteComment} sx={{ paddingY: 0 }}>
-                                Delete
-                              </MenuItem>
-                            </>
+                            <MenuItem onClick={handleClose} sx={{ paddingY: 0 }}>
+                              Edit
+                            </MenuItem>
+                            <Divider sx={{ marginX: 0 }} />
+                            <MenuItem onClick={handleDeleteComment} sx={{ paddingY: 0 }}>
+                              Delete
+                            </MenuItem>
                           </MenuList>
                         </ClickAwayListener>
                       </Paper>
@@ -142,16 +164,43 @@ const Comment = ({ postUser, comment, handleDelete }) => {
             )}
           </Box>
           <Box>
-            <Box sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}>
-              <FacebookSelector variant='facebook' iconSize={12} />
+            <Box
+              sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}
+              onMouseEnter={() => setShowIcon(true)}
+              onMouseLeave={() => setShowIcon(false)}
+            >
+              <Box
+                sx={{ marginLeft: '10px', marginRight: '70%', display: 'flex', position: 'relative' }}
+                onClick={handleToggleAction}
+              >
+                <Box sx={{ display: 'flex', backgroundColor: '#feffff', padding: 0, borderRadius: '5px' }}>
+                  {actionOnComment ? (
+                    <FacebookSelector reactions={[actionOnComment.toLowerCase()]} iconSize={12} />
+                  ) : (
+                    <>
+                      <Typography>{comment.countAction || 10}</Typography>
+                      <ThumbUpOffAltIcon />
+                    </>
+                  )}
+                </Box>
+              </Box>
+              <>
+                {showIcon && (
+                  <Box sx={{ position: 'absolute', top: '-110%', zIndex: 100 }}>
+                    <FacebookSelector variant='facebook' iconSize={20} onSelect={handleReactOnComment} />
+                  </Box>
+                )}
+              </>
             </Box>
-            {dateFormatFromString(comment.createdDate)}
-            <IconButton size='small' aria-label='reply' onClick={() => setShowReplies(!showReplies)}>
-              <Reply />
-            </IconButton>
-            <IconButton size='small' aria-label='reply' onClick={() => handleShowReply(page)}>
-              <MoreHorizIcon />
-            </IconButton>
+            <Box>
+              {dateFormatFromString(comment.createdDate)}
+              <IconButton size='small' aria-label='reply' onClick={() => setShowReplies(!showReplies)}>
+                <Reply />
+              </IconButton>
+              <IconButton size='small' aria-label='reply' onClick={() => handleShowReply(page)}>
+                <MoreHorizIcon />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </Box>
