@@ -27,6 +27,7 @@ import CustomModal from '../../components/CustomModal';
 import Post from '../../components/Post';
 import UserContext from '../../context/UserContext';
 import { setProfileToLS } from '../../utils/auth';
+import Navbar from '../../components/Navbar';
 const friends = [
   {
     img: 'img1.jpg',
@@ -169,6 +170,7 @@ const Profile = () => {
         palette: { mode: 'light' }
       })}
     >
+      <Navbar />
       <Add />
       {/* Avatar Modal */}
       <CustomModal open={isShowAvatarModal} handleClose={handleClose}>

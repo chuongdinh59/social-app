@@ -35,7 +35,11 @@ const userService = {
       }
     });
   },
-  // body {id, slug} | {id} | {slig}
+  /**
+   * 
+   * @param {id} body 
+   * @returns {user}
+   */
   getUserBySlugOrId(body) {
     return http.get(URL_USER_BY_ID_OR_SLUG(body));
   }
