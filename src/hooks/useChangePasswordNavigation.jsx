@@ -10,7 +10,6 @@ export function useChangePasswordNavigation() {
    * if role === LECTURER && status === DeACTIVE --> change password
    *
    */
-  console.log(user);
   // Function to navigate to the "/change-password" route if isChangePassword is false
 
   useEffect(() => {
