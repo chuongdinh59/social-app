@@ -129,7 +129,6 @@ const Post = ({ post }) => {
     let res = await commentService.getCommentByPostId(id, page + 1);
     res?.data && setComments((pre) => [...pre, ...res.data.data]);
   };
-  console.log(createdDate);
   // #endregion
   return (
     <Card sx={{ margin: 5 }}>
