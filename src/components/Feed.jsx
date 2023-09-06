@@ -1,10 +1,10 @@
-import { Alert, AlertTitle, Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Skeleton, Stack } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { toast } from 'react-toastify';
 import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import Post from './Post';
-import { toast } from 'react-toastify';
 const Feed = () => {
   const { posts, updatePosts } = useContext(PostContext);
   const [loading, setLoading] = useState();
@@ -20,7 +20,6 @@ const Feed = () => {
       updatePosts(response?.data?.posts || []);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
-      console.log('AA');
       toast.error('error: ', error);
     } finally {
       setLoading(false);

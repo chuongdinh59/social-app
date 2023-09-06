@@ -12,14 +12,15 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import authService from '../../apis/authService';
 import userService from '../../apis/userService';
 import UserContext from '../../context/UserContext';
-import { setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
+import { clearLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
+import { isDateValid } from '../../utils/dateFormat';
 const defaultTheme = createTheme();
 
 export default function Login() {
@@ -28,7 +29,7 @@ export default function Login() {
       return authService.login(body);
     }
   });
-  const { setUser } = useContext(UserContext);
+  const { setUser, setIsChangePassword } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -53,14 +54,36 @@ export default function Login() {
           try {
             const currentUserResponse = await userService.getCurrentUser();
             const data = currentUserResponse?.data;
-            setProfileToLS(data);
-            setUser(data);
+            console.log(data);
+            if (data.status === 'DEACTIVE') {
+              if (data.role.name === 'ROLE_LECTURER') {
+                //DEACTIVE && LECTURER
+                /**
+                 * createdDate so với now <= 1 ngày --> nav --> ChangePass --> fetch to changePass
+                 * > 1 ngày --> toast lỗi
+                 */
+                if (isDateValid(data.createdDate)) {
+                  toast.success('Cần đổi mật khẩu');
+                  setProfileToLS(data);
+                  setUser(data);
+                  navigate('/change-password');
+                } else {
+                  clearLS();
+                  toast.error('Quá hạn ngày đổi mật khẩu ! Liên hệ anh Hùng FB: Hoàng Hùng ');
+                }
+              } else if (data.role.name === 'ROLE_ALUMNI') {
+                toast.error('Tài khoản chưa được admin xác nhận ! Liên hệ anh Hùng FB: Hoàng Hùng');
+                clearLS();
+              }
+            } else {
+              setProfileToLS(data);
+              setUser(data);
+              navigate('/');
+            }
           } catch (error) {
             console.error('Error fetching current user:', error);
           }
         }
-
-        navigate('/');
       }
     });
   };

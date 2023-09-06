@@ -8,9 +8,11 @@ export function PostProvider({ children }) {
     if (isAdd) setPosts((prevPosts) => [...newPosts, ...prevPosts]);
     else setPosts((prevPosts) => [...prevPosts, ...newPosts]);
   };
+  console.log(posts);
   const value = {
     posts,
-    updatePosts
+    updatePosts,
+    setPosts
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;

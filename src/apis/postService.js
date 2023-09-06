@@ -1,4 +1,4 @@
-import { URL_POST, URL_POST_WITH_SLUG } from '../constant/url';
+import { URL_POST, URL_POST_WITH_SLUG, URL_TOGGLE_BLOCK_COMMET } from '../constant/url';
 import http from '../utils/http';
 const postService = {
   createPost(body) {
@@ -18,6 +18,9 @@ const postService = {
       url = `${url}&userId=${userId}`;
     }
     return http.get(url);
+  },
+  toggleBlockComment(body) {
+    return http.get(URL_TOGGLE_BLOCK_COMMET(body.id));
   }
 };
 
