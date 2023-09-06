@@ -5,25 +5,24 @@ import {
   Avatar,
   Badge,
   Box,
+  ClickAwayListener,
+  Grow,
   InputBase,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
-  styled,
+  MenuList,
+  Paper,
+  Popper,
   Toolbar,
   Typography,
-  ClickAwayListener,
-  Popper,
-  Grow,
-  Paper,
-  MenuList,
-  ListItemIcon,
-  ListItemText
+  styled
 } from '@mui/material';
 import React, { useContext, useRef } from 'react';
-import logo from '../assets/surface_logo.png';
-import { clearLS } from '../utils/auth';
-import { useNavigate } from 'react-router-dom';
-import UserContext from '../context/UserContext';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/surface_logo.png';
+import UserContext from '../context/UserContext';
+import { clearLS } from '../utils/auth';
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -95,17 +94,10 @@ const Navbar = () => {
           <Badge badgeContent={2} color='error'>
             <Notifications cursor='pointer' />
           </Badge>
-          <Avatar
-            sx={{ width: 30, height: 30, cursor: 'pointer' }}
-            src={profile.avatar}  
-            onClick={handleAvatarClick}
-          />
+          <Avatar sx={{ width: 30, height: 30, cursor: 'pointer' }} src={profile.avatar} onClick={handleAvatarClick} />
         </Icons>
         <UserBox onClick={handleAvatarClick}>
-          <Avatar
-            sx={{ width: 30, height: 30 }}
-            src={profile.avatar}
-          />
+          <Avatar sx={{ width: 30, height: 30 }} src={profile.avatar} />
           <Typography variant='span'>John</Typography>
         </UserBox>
       </StyledToolbar>

@@ -15,6 +15,10 @@ export const URL_CURRENT_USER = `${URL_USER}current-user/`;
 export const URL_REGISTER = `${URL_USER}register/`; // Replace with your register URL
 export const URL_UPLOAD_AVATAR = `${URL_USER}upload-avatar/`;
 export const URL_UPLOAD_BG = `${URL_USER}upload-bg/`;
+export const URL_USER_BY_ID_OR_SLUG = (body) => {
+  const param = body.id ? `id=${body.id}` : body.slug ? `slug=${body.slug}` : '';
+  return `${URL_USER}?${param}`;
+};
 
 // Post API
 export const URL_POST = '/api/posts/';

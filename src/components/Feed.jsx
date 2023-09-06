@@ -13,6 +13,7 @@ const Feed = () => {
     setLoading(true);
     try {
       const response = await postService.getPosts(page);
+      console.log(response);
       updatePosts(response?.data?.posts || []);
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
@@ -22,7 +23,6 @@ const Feed = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchData();
   }, []);

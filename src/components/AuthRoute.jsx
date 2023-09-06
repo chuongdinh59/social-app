@@ -4,7 +4,7 @@ import { getProfileFromLS } from '../utils/auth';
 export const AuthRoute = ({ redirect = '/' }) => {
   const user = getProfileFromLS();
   const { state } = useLocation();
-  if (!user) return <Navigate to={state?.redirect || redirect} />;
+  if (!user || user?.status === 'DEACTIVE') return <Navigate to={state?.redirect || redirect} />;
 
   return <Outlet />;
 };
