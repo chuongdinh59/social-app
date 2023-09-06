@@ -20,13 +20,9 @@ const ImageGrid = ({ images, handleToggleModal }) => {
         >
           <CardMedia
             component='img'
-            height='400px'
             image={img.url}
             alt={`Image ${index}`}
-            sx={{
-              width: '100%',
-              display: 'block'
-            }}
+            sx={{ width: '100%', display: 'block', height: '400px' }}
           />
           {/* Hình 2 && số lượng hình lớn hơn 2  */}
           {index === 1 && images.length > 2 && (

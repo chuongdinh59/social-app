@@ -1,5 +1,4 @@
 import { FacebookCounter, FacebookSelector, FacebookSelectorEmoji, icons } from '@charkour/react-reactions';
-import { useMutation } from '@tanstack/react-query';
 import { MoreVert, Share } from '@mui/icons-material';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -28,17 +27,18 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import actionService from '../apis/actionService';
 import commentService from '../apis/commentService';
-import { PostType, Status } from '../mock/post';
+import { PostType } from '../mock/post';
+import { getProfileFromLS } from '../utils/auth';
+import { dateFormatFromDate, dateFormatFromString } from '../utils/dateFormat';
 import Comment from './Comment';
 import ImageGrid from './ImageGrid';
 import ImageModal from './ImageModal';
 import Survey from './Survey';
-import actionService from '../apis/actionService';
-import { getProfileFromLS } from '../utils/auth';
-import { Link } from 'react-router-dom';
-
 const Post = ({ post }) => {
   // #region Section for handling Card Headers
   const {
@@ -111,23 +111,16 @@ const Post = ({ post }) => {
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
-
   const handleDeleteComent = async (id) => {
     setComments((pre) => pre.filter((i) => i.id !== id));
     const data = await commentService.deleteComment(id);
   };
-  // Test user
   const handleAddComment = async () => {
     if (comment.trim() !== '') {
-      const newComment = {
-        user: getProfileFromLS(),
-        content: comment
-      };
+      let newComment = { user: getProfileFromLS(), content: comment, createdDate: dateFormatFromDate(new Date()) };
+      let res = await commentService.addComment({ content: comment, postId: id });
+      newComment = { ...newComment, id: res?.data.id };
       setComments([...comments, newComment]);
-      await commentService.addComment({
-        content: comment,
-        postId: id
-      });
       setComment('');
     }
   };
@@ -136,6 +129,7 @@ const Post = ({ post }) => {
     let res = await commentService.getCommentByPostId(id, page + 1);
     res?.data && setComments((pre) => [...pre, ...res.data.data]);
   };
+  console.log(createdDate);
   // #endregion
   return (
     <Card sx={{ margin: 5 }}>
@@ -158,7 +152,7 @@ const Post = ({ post }) => {
               </Typography>{' '}
             </Link>
           }
-          subheader={createdDate}
+          subheader={dateFormatFromString(createdDate)}
         />
 
         <div>
