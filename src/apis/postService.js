@@ -8,7 +8,8 @@ const postService = {
       }
     });
   },
-  getPosts(pageNumber, { userId = null, slug = null }) {
+  getPosts(pageNumber, { userId = null, slug = null } = {}) {
+    console.log('GET POSTS');
     if (slug) {
       console.log(URL_POST_WITH_SLUG(slug));
       return http.get(`${URL_POST_WITH_SLUG(slug)}?page=${pageNumber}`);

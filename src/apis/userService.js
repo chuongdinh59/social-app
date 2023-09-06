@@ -1,4 +1,5 @@
 import {
+  URL_ACTIVE_LECTURE,
   URL_CURRENT_USER,
   URL_REGISTER,
   URL_UPLOAD_AVATAR,
@@ -36,12 +37,16 @@ const userService = {
     });
   },
   /**
-   * 
-   * @param {id} body 
+   *
+   * @param {id} body
    * @returns {user}
    */
   getUserBySlugOrId(body) {
     return http.get(URL_USER_BY_ID_OR_SLUG(body));
+  },
+
+  activeLecture(body) {
+    return http.post(URL_ACTIVE_LECTURE, body);
   }
 };
 
