@@ -8,7 +8,6 @@ export function UserProvider({ children }) {
     profile: user,
     setUser
   };
-
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 

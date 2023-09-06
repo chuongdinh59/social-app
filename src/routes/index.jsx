@@ -5,9 +5,11 @@ import Register from '../pages/auth/Register';
 import Chat from '../pages/chat';
 import Home from '../pages/home';
 import Profile from '../pages/profile';
+import FriendProfile from '../pages/profile/FriendProfile';
 
 export const routers = [
   { path: '/', element: <Home /> },
+  { path: 'pr', element: <FriendProfile /> },
   { path: 'login', element: <Login /> },
   {
     path: 'profile',
@@ -25,6 +27,7 @@ export const routers = [
       // Add other nested routes for the chat page if needed
     ]
   },
+  { path: 'user/' },
   { path: 'register', element: <Register /> },
   { path: '*', element: <PageNotFound /> }
 ];
