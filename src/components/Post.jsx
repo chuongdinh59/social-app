@@ -234,7 +234,7 @@ const Post = ({ post }) => {
         {/* Card Action */}
         <Box>
           <Box sx={{ marginLeft: '10px' }}>
-            <FacebookCounter counters={count_action} />
+            <FacebookCounter />
           </Box>
           <CardActions>
             <Grid container style={{ position: 'relative' }}>
@@ -255,11 +255,6 @@ const Post = ({ post }) => {
                     {actionOnPost ? (
                       <>
                         <FacebookSelector reactions={[actionOnPost]} iconSize={12} variant='facebook' />
-                        <FacebookSelectorEmoji
-                          key={actionOnPost}
-                          label={actionOnPost}
-                          icon={icons.find('facebook', actionOnPost)}
-                        />
                       </>
                     ) : (
                       <>
