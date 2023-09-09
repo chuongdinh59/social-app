@@ -46,7 +46,7 @@ import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import CustomLoading from './CustomLoading';
-const Post = ({ post }) => {
+const Post = ({ post, setPostFromPostDetail = null }) => {
   // #region Section for handling Card Headers
   const {
     id,
@@ -142,7 +142,6 @@ const Post = ({ post }) => {
   const handleBlockComment = () => {
     setLoading(true);
     postService.toggleBlockComment({ id }).then((res) => {
-      console.log(res.data);
       const updatedPosts = posts.map((post) => {
         if (post.id === id) {
           // Update the lockComment property with the value from res.data.lockComment
@@ -151,6 +150,7 @@ const Post = ({ post }) => {
         return post; // For other posts, keep them as they are
       });
       setPosts(updatedPosts);
+      setPostFromPostDetail && setPostFromPostDetail(res.data.data);
       setLoading(false);
     });
   };
@@ -315,7 +315,13 @@ const Post = ({ post }) => {
           </Button>
           <CardContent>
             {comments.map((comment, index) => (
-              <Comment postUser={user} handleDelete={handleDeleteComent} comment={comment} key={index} />
+              <Comment
+                isLockComment={lockComment}
+                postUser={user}
+                handleDelete={handleDeleteComent}
+                comment={comment}
+                key={index}
+              />
             ))}
           </CardContent>
           <CardContent>

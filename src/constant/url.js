@@ -30,6 +30,9 @@ export const URL_POST_WITH_SLUG = (slug) => {
 export const URL_TOGGLE_BLOCK_COMMET = (id) => {
   return `${URL_POST}block-comment/${id}`;
 };
+export const URL_GET_POST_BY_ID = (id) => {
+  return `${URL_POST}${id}/`;
+};
 // Comment API
 export const URL_COMMENT = '/api/comments/';
 export const URL_ADD_REPLY = `${URL_COMMENT}addReply/`;

@@ -4,6 +4,7 @@ import {
   URL_REGISTER,
   URL_UPLOAD_AVATAR,
   URL_UPLOAD_BG,
+  URL_USER,
   URL_USER_BY_ID_OR_SLUG
 } from '../constant/url';
 import http from '../utils/http';

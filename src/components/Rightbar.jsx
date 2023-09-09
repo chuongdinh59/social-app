@@ -1,5 +1,6 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
+import FriendCard from './CardFriend';
 
 const Rightbar = () => {
   return (
@@ -8,7 +9,7 @@ const Rightbar = () => {
       p={2}
       sx={{
         display: { xs: 'none', sm: 'block' },
-        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' // Add box shadow here
+        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' // Add box shadow here,
       }}
     >
       <div style={{ textAlign: 'center', padding: '5px' }}>
@@ -27,6 +28,23 @@ const Rightbar = () => {
           <a href='https://ou.edu.vn/'>Truy cập Đại học mở</a>
         </Typography>
       </div>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          width: '100%'
+        }}
+      >
+        <Grid item>
+          <FriendCard />
+        </Grid>
+        <Grid item>
+          <FriendCard />
+        </Grid>
+        <Grid item>
+          <FriendCard />
+        </Grid>
+      </Grid>
     </Box>
   );
 };

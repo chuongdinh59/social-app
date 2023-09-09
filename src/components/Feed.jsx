@@ -1,10 +1,12 @@
-import { Alert, AlertTitle, Box, Skeleton, Stack } from '@mui/material';
+import { Alert, AlertTitle, Box, Grid, Skeleton, Stack } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { toast } from 'react-toastify';
 import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import Post from './Post';
+import FriendCard from './CardFriend';
+
 const Feed = () => {
   const { posts, updatePosts } = useContext(PostContext);
   const [loading, setLoading] = useState();

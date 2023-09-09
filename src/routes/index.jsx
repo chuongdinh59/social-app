@@ -5,6 +5,7 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import Chat from '../pages/chat';
 import Home from '../pages/home';
+import PostDetail from '../pages/home/PostDetails';
 import Profile from '../pages/profile';
 import FriendProfile from '../pages/profile/FriendProfile';
 
@@ -32,7 +33,10 @@ export const routers = [
       // Add other nested routes for the chat page if needed
     ]
   },
-  { path: 'user/' },
+  {
+    path: 'post/:id', // Add the new route for PostDetail with a variable :id
+    element: <PostDetail />
+  },
   { path: 'register', element: <Register /> },
   { path: '*', element: <PageNotFound /> }
 ];
