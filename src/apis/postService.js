@@ -1,4 +1,10 @@
-import { URL_GET_POST_BY_ID, URL_POST, URL_POST_WITH_SLUG, URL_TOGGLE_BLOCK_COMMET } from '../constant/url';
+import {
+  URL_DELETE_POST_BY_ID,
+  URL_GET_POST_BY_ID,
+  URL_POST,
+  URL_POST_WITH_SLUG,
+  URL_TOGGLE_BLOCK_COMMET
+} from '../constant/url';
 import http from '../utils/http';
 const postService = {
   createPost(body) {
@@ -25,6 +31,9 @@ const postService = {
 
   getPost(id) {
     return http.get(URL_GET_POST_BY_ID(id));
+  },
+  deletePost(id) {
+    return http.delete(URL_DELETE_POST_BY_ID(id));
   }
 };
 

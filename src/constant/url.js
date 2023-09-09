@@ -33,6 +33,10 @@ export const URL_TOGGLE_BLOCK_COMMET = (id) => {
 export const URL_GET_POST_BY_ID = (id) => {
   return `${URL_POST}${id}/`;
 };
+export const URL_DELETE_POST_BY_ID = (id) => {
+  return `${URL_POST}${id}/delete/`;
+};
+
 // Comment API
 export const URL_COMMENT = '/api/comments/';
 export const URL_ADD_REPLY = `${URL_COMMENT}addReply/`;

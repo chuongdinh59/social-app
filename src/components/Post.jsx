@@ -46,7 +46,7 @@ import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import CustomLoading from './CustomLoading';
-const Post = ({ post, setPostFromPostDetail = null }) => {
+const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) => {
   // #region Section for handling Card Headers
   const {
     id,
@@ -62,7 +62,7 @@ const Post = ({ post, setPostFromPostDetail = null }) => {
     currentAction
   } = post;
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const { posts, setPosts } = useContext(PostContext);
+  const { posts, setPosts, handleDeletePost } = useContext(PostContext);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState(false);
   const [showIcon, setShowIcon] = useState(false);
@@ -77,7 +77,6 @@ const Post = ({ post, setPostFromPostDetail = null }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const handleDeletePost = () => {};
   //#endregion
   // #region Section for handling actions on the post
   const [actionOnPost, setActionOnPost] = useState(currentAction?.toLowerCase());
@@ -191,7 +190,12 @@ const Post = ({ post, setPostFromPostDetail = null }) => {
                     <Paper>
                       <ClickAwayListener onClickAway={handleMenuClose}>
                         <MenuList autoFocusItem={open} sx={{ padding: 0 }}>
-                          <MenuItem onClick={handleDeletePost}>
+                          <MenuItem
+                            onClick={() => {
+                              handleDeletePost(id);
+                              deletePostProfile && deletePostProfile(id); // delete in profile
+                            }}
+                          >
                             <ListItemIcon>
                               <DeleteIcon fontSize='small' />
                             </ListItemIcon>

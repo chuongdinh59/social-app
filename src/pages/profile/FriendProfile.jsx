@@ -1,14 +1,26 @@
 import { ThemeProvider } from '@emotion/react';
-import { Avatar, Box, Container, Grid, Paper, Skeleton, Stack, Typography, createTheme } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Avatar,
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Skeleton,
+  Stack,
+  Typography,
+  createTheme
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import userService from '../../apis/userService';
-import useQueryParams from '../../hooks/useSearchParams';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import postService from '../../apis/postService';
-import Post from '../../components/Post';
-import { useParams } from 'react-router-dom';
+import userService from '../../apis/userService';
 import Navbar from '../../components/Navbar';
+import Post from '../../components/Post';
+import useQueryParams from '../../hooks/useSearchParams';
 const friends = [
   {
     img: 'img1.jpg',
@@ -78,7 +90,10 @@ const FriendProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await userService.getUserBySlugOrId(params);
+        const res = await userService.getUserBySlugOrId({
+          slug,
+          id: params.id || null
+        });
         setUser(res.data);
       } catch (error) {}
     };
