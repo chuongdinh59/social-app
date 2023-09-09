@@ -12,24 +12,6 @@ const listItem = [
   {
     component: 'a',
     href: '#home',
-    text: 'Pages',
-    icon: <Article />
-  },
-  {
-    component: 'a',
-    href: '#home',
-    text: 'Groups',
-    icon: <Group />
-  },
-  {
-    component: 'a',
-    href: '#home',
-    text: 'Marketplace',
-    icon: <Storefront />
-  },
-  {
-    component: 'a',
-    href: '#home',
     text: 'Friends',
     icon: <Person />
   },
