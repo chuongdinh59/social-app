@@ -3,7 +3,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
+import { FacebookSelector } from '@charkour/react-reactions';
 import {
   Avatar,
   Box,
@@ -20,7 +20,7 @@ import {
   Popper,
   Grow
 } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import commentService from '../apis/commentService';
 import { getProfileFromLS } from '../utils/auth';
 import { Link } from 'react-router-dom';
@@ -40,7 +40,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   const [anchorElForClick, setAnchorElForClick] = useState(null);
   const open = Boolean(anchorElForClick);
   // #region action handlers
-  const [actionOnComment, setActionOnComment] = useState(comment?.currentAction);
+  const [actionOnComment, setActionOnComment] = useState(comment?.currentAction?.toLowerCase());
   const [showIcon, setShowIcon] = useState(false);
   const handleReactOnComment = (key) => {
     setActionOnComment(key);
@@ -49,9 +49,13 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   const handleToggleAction = async (event) => {
     setActionOnComment((prev) => (prev ? null : 'like'));
   };
+  const firstRender = useRef(true);
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     const saveOrUpdateOrDelete = async () => {
-      // This code will run whenever actionOnComment changes.
       const formData = new FormData();
       formData.append('comment', comment.id);
       // case when add new -> up like
@@ -101,6 +105,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
     setShowReplies(true);
     const replies = await commentService.getRepliesByCommentId(comment.id, page);
     replies?.data && setReplies(replies.data.data);
+    console.log(replies.data)
   };
   // #endregion
   // #region handle Reply delete ...
@@ -112,7 +117,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   return (
     <>
       <Box sx={{ marginTop: '10px', alignItems: 'center', display: 'flex' }}>
-        <Link to='/profile' style={{ marginRight: '10px' }}>
+        <Link to={`/user/?userId=${comment.user.id}`} style={{ marginRight: '10px' }}>
           <Avatar src={comment.user.avatar} alt={comment.user.displayName} />
         </Link>
         <Box sx={{ position: 'relative', minWidth: '75%' }}>

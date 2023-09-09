@@ -160,7 +160,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
         <Box>
           <CardHeader
             avatar={
-              <Link to='/profile'>
+              <Link to={`/user/?userId=${user.id}`}>
                 <Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={user.avatar} />
               </Link>
             }
@@ -170,7 +170,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
               </IconButton>
             }
             title={
-              <Link to='/profile' style={{ textDecoration: 'none', color: 'black' }}>
+              <Link to={`/?userId=${user.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                 <Typography variant='h6' fontWeight='600' fontSize={18}>
                   {user.displayName}
                 </Typography>{' '}

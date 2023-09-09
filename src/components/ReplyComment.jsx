@@ -11,17 +11,46 @@ import {
   Popper,
   Divider
 } from '@mui/material';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '../context/UserContext';
 import { FacebookSelector } from '@charkour/react-reactions';
 import { dateFormatFromString } from '../utils/dateFormat';
+import actionService from '../apis/actionService';
 
 const ReplyComment = ({ postUser, reply, key, handleDelete }) => {
   // #region get user profile
   const { profile } = useContext(UserContext);
   //#endregion
+  // #region action handlers
+  const [actionOnReply, setActionOnReply] = useState(reply?.currentAction?.toLowerCase());
+  const [showIcon, setShowIcon] = useState(false);
+  const handleReactOnReply = (key) => {
+    setActionOnReply(key);
+    setShowIcon(false);
+  };
+  const handleToggleAction = async (event) => {
+    setActionOnReply((prev) => (prev ? null : 'like'));
+  };
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const saveOrUpdateOrDelete = async () => {
+      const formData = new FormData();
+      formData.append('subComment', reply.id);
+      // case when add new -> up like
+      if (actionOnReply) formData.append('action', actionOnReply?.toUpperCase());
+      if (formData.get('subComment') || formData.get('action')) {
+        const data = await actionService.actionOnReply(formData);
+      }
+    };
+    saveOrUpdateOrDelete();
+  }, [actionOnReply]);
   // #region click to open menu delete or ...
   const [anchorElForClick, setAnchorElForClick] = useState(null);
   const open = Boolean(anchorElForClick);
@@ -40,7 +69,7 @@ const ReplyComment = ({ postUser, reply, key, handleDelete }) => {
   // #endregion
   return (
     <Box key={`${reply.id}${key}`} sx={{ marginTop: '30px', display: 'flex', alignItems: 'center' }}>
-      <Link to='/profile' style={{ marginRight: '10px' }}>
+      <Link to={`/?userId=${reply.user.id}`} style={{ marginRight: '10px' }}>
         <Avatar src={reply.user.avatar} alt={reply.user.displayName} />
       </Link>
       <Box sx={{ position: 'relative', minWidth: '75%' }}>
@@ -92,8 +121,33 @@ const ReplyComment = ({ postUser, reply, key, handleDelete }) => {
           )}
         </Box>
         <Box>
-          <Box sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}>
-            <FacebookSelector variant='facebook' iconSize={12} />
+          <Box
+            sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}
+            onMouseEnter={() => setShowIcon(true)}
+            onMouseLeave={() => setShowIcon(false)}
+          >
+            <Box
+              sx={{ marginLeft: '10px', marginRight: '70%', display: 'flex', position: 'relative' }}
+              onClick={handleToggleAction}
+            >
+              <Box sx={{ display: 'flex', backgroundColor: '#feffff', padding: 0, borderRadius: '5px' }}>
+                {actionOnReply ? (
+                  <FacebookSelector reactions={[actionOnReply.toLowerCase()]} iconSize={12} />
+                ) : (
+                  <>
+                    <Typography>{reply?.countAction || 0}</Typography>
+                    <ThumbUpOffAltIcon />
+                  </>
+                )}
+              </Box>
+            </Box>
+            <>
+              {showIcon && (
+                <Box sx={{ position: 'absolute', top: '-110%', zIndex: 100 }}>
+                  <FacebookSelector variant='facebook' iconSize={20} onSelect={handleReactOnReply} />
+                </Box>
+              )}
+            </>
           </Box>
           {dateFormatFromString(reply.createdDate)}
         </Box>
