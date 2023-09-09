@@ -43,6 +43,7 @@ const userService = {
    * @returns {user}
    */
   getUserBySlugOrId(body) {
+    console.log(body);
     return http.get(URL_USER_BY_ID_OR_SLUG(body));
   },
 

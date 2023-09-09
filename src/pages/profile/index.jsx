@@ -25,12 +25,13 @@ import { toast } from 'react-toastify';
 import postService from '../../apis/postService';
 import userService from '../../apis/userService';
 import Add from '../../components/Add';
+import CustomLoading from '../../components/CustomLoading';
 import CustomModal from '../../components/CustomModal';
+import Navbar from '../../components/Navbar';
 import Post from '../../components/Post';
 import UserContext from '../../context/UserContext';
 import { setProfileToLS } from '../../utils/auth';
-import Navbar from '../../components/Navbar';
-import CustomLoading from '../../components/CustomLoading';
+import { PostContext } from '../../context/PostContext';
 const friends = [
   {
     img: 'img1.jpg',
@@ -170,7 +171,9 @@ const Profile = () => {
       setLoading(false);
     }
   };
-
+  const deletePostProfile = (id) => {
+    setPosts((pre) => pre.filter((post) => post.id !== id));
+  };
   useEffect(() => {
     userService.getCurrentUser().then((res) => {
       setProfileToLS(res.data);
@@ -421,7 +424,7 @@ const Profile = () => {
                   >
                     <ul>
                       {posts?.map((post, index) => {
-                        return <Post key={index} post={post} />;
+                        return <Post deletePostProfile={deletePostProfile} key={index} post={post} />;
                       })}
                     </ul>
                   </InfiniteScroll>
