@@ -12,6 +12,7 @@ import FriendProfile from '../pages/profile/FriendProfile';
 export const routers = [
   { path: '/', element: <Home /> },
   { path: 'user/:slug', element: <FriendProfile /> },
+  { path: 'user', element: <FriendProfile /> },
   { path: 'login', element: <Login /> },
   {
     path: 'change-password',

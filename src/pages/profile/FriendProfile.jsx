@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import postService from '../../apis/postService';
 import userService from '../../apis/userService';
@@ -87,6 +87,7 @@ const FriendProfile = () => {
   /**
    * lấy user Profile
    */
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -94,8 +95,16 @@ const FriendProfile = () => {
           slug,
           id: params.id || null
         });
-        setUser(res.data);
-      } catch (error) {}
+        if (res.data !== null) {
+          setUser(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error) {
+          toast.error('Không tìm thấy user');
+          navigate('/');
+        }
+      }
     };
     fetchUser();
   }, [params?.userId, slug]);
