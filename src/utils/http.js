@@ -19,7 +19,7 @@ class Http {
     this.refreshTokenRequest = null;
     this.instance = axios.create({
       baseURL: 'http://localhost:8080', // Replace with your base URL
-      timeout: 10000,
+      // timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
         'expire-access-token': 60 * 60 * 24, // 1 day

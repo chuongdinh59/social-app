@@ -29,7 +29,7 @@ import ReplyComment from './ReplyComment';
 import { dateFormatFromString } from '../utils/dateFormat';
 import actionService from '../apis/actionService';
 
-const Comment = ({ postUser, comment, handleDelete }) => {
+const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   // #region get user profile
   const { profile } = useContext(UserContext);
   // #endregion
@@ -215,23 +215,25 @@ const Comment = ({ postUser, comment, handleDelete }) => {
           {replies?.map((reply, index) => (
             <ReplyComment postUser={postUser} reply={reply} key={index} handleDelete={handleDeleteReply} />
           ))}
-          <TextField
-            sx={{ width: '95%' }}
-            label='Reply'
-            value={reply}
-            onChange={handleReplyChange}
-            variant='outlined'
-            margin='dense'
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton onClick={handleAddReply}>
-                    <SendOutlinedIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
+          {!isLockComment && (
+            <TextField
+              sx={{ width: '95%' }}
+              label='Reply'
+              value={reply}
+              onChange={handleReplyChange}
+              variant='outlined'
+              margin='dense'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton onClick={handleAddReply}>
+                      <SendOutlinedIcon />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          )}
         </Box>
       )}
     </>

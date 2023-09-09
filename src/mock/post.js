@@ -20,7 +20,6 @@ const posts = [
     id: 1,
     content: 'This is a sample post content.',
     lock_comment: false,
-    count_action: 0,
     created_date: '20-11-2023',
     modified_date: '20-11-2023',
     type: PostType.POST,
