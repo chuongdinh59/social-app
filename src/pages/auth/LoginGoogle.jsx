@@ -1,14 +1,14 @@
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-const client_id = '810184422731-00b0916a2pnska28ko2h66sf0dcnmquj.apps.googleusercontent.com';
 import jwt_decode from 'jwt-decode';
-import { randomIntFromInterval, removeVietnameseTones } from '../../utils/utils';
-import userService from '../../apis/userService';
 import { useContext, useState } from 'react';
-import authService from '../../apis/authService';
-import CustomLoading from '../../components/CustomLoading';
-import { setAccessTokenToLS, setProfileToLS } from '../../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import authService from '../../apis/authService';
+import userService from '../../apis/userService';
+import CustomLoading from '../../components/CustomLoading';
 import UserContext from '../../context/UserContext';
+import { setAccessTokenToLS, setProfileToLS } from '../../utils/auth';
+import { removeVietnameseTones } from '../../utils/utils';
+const client_id = '810184422731-00b0916a2pnska28ko2h66sf0dcnmquj.apps.googleusercontent.com';
 
 function LoginGoogleBtn() {
   const navigate = useNavigate();

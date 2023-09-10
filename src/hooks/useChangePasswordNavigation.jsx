@@ -11,15 +11,11 @@ export function useChangePasswordNavigation() {
    *
    */
   // Function to navigate to the "/change-password" route if isChangePassword is false
-
+  console.log(user);
   useEffect(() => {
-    if (!!user){
-
-    }
-    else if (user?.role.name === 'ROLE_LECTURER' && user?.status === 'DEACTIVE') {
+    if (Object.keys(user).length !== 0 && user.role.name === 'ROLE_LECTURER' && user.status === 'DEACTIVE') {
       console.log('Chuyển');
       navigate('/change-password');
     }
-
   }, [user.status]);
 }
