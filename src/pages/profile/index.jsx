@@ -71,6 +71,9 @@ const friends = [
   }
 ];
 const Profile = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scrolls to the top of the page when the component mounts or updates
+  }, []);
   // let user = getProfileFromLS();
   const { profile: user, setUser } = useContext(UserContext);
   const [posts, setPosts] = useState([]);

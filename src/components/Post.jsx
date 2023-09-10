@@ -29,8 +29,8 @@ import {
   Typography
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import actionService from '../apis/actionService';
 import commentService from '../apis/commentService';
 import { PostType } from '../mock/post';
@@ -46,6 +46,9 @@ import postService from '../apis/postService';
 import { PostContext } from '../context/PostContext';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import CustomLoading from './CustomLoading';
+import { isEmptyObject } from '../utils/utils';
+import { toast } from 'react-toastify';
+import CustomModal from './CustomModal';
 const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) => {
   // #region Section for handling Card Headers
   const {
@@ -70,6 +73,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
   const [comments, setComments] = useState([]);
   const { profile } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const handleToggleModal = () => setShowModal(!showModal);
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -96,16 +100,25 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
   const handleToggleAction = async (event) => {
     setActionOnPost((prev) => (prev ? null : 'like'));
   };
+  const firstRender = useRef(true);
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
     const saveOrUpdateOrDelete = async () => {
       // This code will run whenever actionOnPost changes.
       const formData = new FormData();
       formData.append('post', id);
       // case when add new -> up like
       if (actionOnPost) formData.append('action', actionOnPost.toUpperCase());
-      const data = await actionMutation.mutateAsync(formData);
+      await actionMutation.mutateAsync(formData);
     };
-    saveOrUpdateOrDelete();
+    if (!isEmptyObject(profile)) {
+      saveOrUpdateOrDelete();
+    } else {
+      navigate('/login');
+    }
   }, [actionOnPost]);
   // #endregion
 
@@ -115,7 +128,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
     res?.data && setComments(res.data.data);
     setIsCommentSectionShow((current) => !current);
   };
-  const [comment, setComment] = useState([]);
+  const [comment, setComment] = useState('');
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
@@ -129,6 +142,9 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
       let res = await commentService.addComment({ content: comment, postId: id });
       newComment = { ...newComment, id: res?.data.id };
       setComments([...comments, newComment]);
+      setComment('');
+    } else {
+      toast.warning('Chưa nhập nội dung bình luận');
       setComment('');
     }
   };
@@ -153,6 +169,12 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
       setLoading(false);
     });
   };
+  // #region Share
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const handleOpenShareModel = () => {
+    setIsShareModalOpen(true);
+  };
+  // #endregion
   return (
     <>
       {loading && <CustomLoading />}
@@ -160,7 +182,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
         <Box>
           <CardHeader
             avatar={
-              <Link to={`/user/?userId=${user.id}`}>
+              <Link to={`/user?userId=${user.id}`}>
                 <Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={user.avatar} />
               </Link>
             }
@@ -170,7 +192,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
               </IconButton>
             }
             title={
-              <Link to={`/?userId=${user.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+              <Link to={`/user?userId=${user.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                 <Typography variant='h6' fontWeight='600' fontSize={18}>
                   {user.displayName}
                 </Typography>{' '}
@@ -304,7 +326,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
                   cursor: 'pointer'
                 }}
               >
-                <IconButton aria-label='share'>
+                <IconButton aria-label='share' onClick={handleOpenShareModel}>
                   <Share /> <Typography fontSize={18}>Chia sẻ</Typography>
                 </IconButton>
               </Grid>
@@ -329,7 +351,7 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
             ))}
           </CardContent>
           <CardContent>
-            {!lockComment && (
+            {!isEmptyObject(profile) && !lockComment && (
               <TextField
                 fullWidth
                 label='Leave a comment'
@@ -350,6 +372,32 @@ const Post = ({ post, setPostFromPostDetail = null, deletePostProfile = null }) 
             )}
           </CardContent>
         </Box>
+        <CustomModal
+          open={isShareModalOpen}
+          handleClose={() => {
+            setIsShareModalOpen(false);
+          }}
+        >
+          <Box style={{ position: 'relative' }}>
+            <TextField value={`localhost:3000/post/${id}`} disabled sx={{ width: '100%' }} />
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(`localhost:3000/post/${id}`);
+                toast.success('Copy vào clipboard thành công');
+              }}
+              sx={{
+                backgroundColor: '#3ea6ff',
+                borderRadius: '10',
+                position: 'absolute',
+                right: '5%',
+                top: '50%',
+                transform: 'translateY(-50%)'
+              }}
+            >
+              Copy
+            </Button>
+          </Box>
+        </CustomModal>
       </Card>
     </>
   );
