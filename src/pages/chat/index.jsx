@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Grid, Divider, InputAdornment, IconButton, TextField, Button } from '@mui/material';
+import { Box, Grid, Divider, InputAdornment, IconButton, TextField, Button, Avatar } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import ChatCard from './ChatCard'; // Adjust the import path
 import Navbar from '../../components/Navbar';
@@ -155,9 +155,13 @@ const ChatList = () => {
               )
             }}
           />
-          <Box padding={2} overflow={'scroll'}>
+          <Box padding={2} overflow={'scroll'} width="100%">
             {messages.map((msg, index) => (
-              <Message key={index} message={msg.text} isMyMessage={msg.senderId === profile.id} />
+              <Box sx={{display: 'flex', width: '100%'}} justifyContent={msg.senderId === profile.id ? 'flex-end': 'flex-start'}>
+                {msg.senderId !== profile.id && (<Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={recipient.avatar} />)}
+                <Message key={index} message={msg.text} isMyMessage={msg.senderId === profile.id} width="100%"/>
+                {msg.senderId === profile.id && (<Avatar sx={{ bgcolor: 'red' }} aria-label='recipe' src={profile.avatar} />)}
+              </Box>
             ))}
           </Box>
         </Grid>

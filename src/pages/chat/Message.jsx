@@ -9,7 +9,7 @@ const Message = ({ message, isMyMessage }) => {
         color={isMyMessage ? 'white' : 'text.primary'}
         borderRadius='8px'
         padding='8px 12px'
-        maxWidth='70%'
+        maxWidth='100%'
       >
         <Typography>{message}</Typography>
       </Box>
