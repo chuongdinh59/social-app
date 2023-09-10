@@ -28,7 +28,6 @@ const userService = {
     return http.post(URL_USER, body);
   },
   updateAvatar(body) {
-    console.log(body);
     return http.post(URL_UPLOAD_AVATAR, body, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -48,7 +47,6 @@ const userService = {
    * @returns {user}
    */
   getUserBySlugOrId(body) {
-    console.log(body);
     return http.get(URL_USER_BY_ID_OR_SLUG(body));
   },
 
