@@ -4,6 +4,7 @@ import {
   AlertTitle,
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   Paper,
@@ -12,7 +13,7 @@ import {
   Typography,
   createTheme
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -21,6 +22,10 @@ import userService from '../../apis/userService';
 import Navbar from '../../components/Navbar';
 import Post from '../../components/Post';
 import useQueryParams from '../../hooks/useSearchParams';
+import SendIcon from '@mui/icons-material/Send';
+import ChatContext from '../../context/ChatContext';
+import UserContext from '../../context/UserContext';
+import { setRecipientToLS } from '../../utils/auth';
 const friends = [
   {
     img: 'img1.jpg',
@@ -69,6 +74,8 @@ const FriendProfile = () => {
   const params = useQueryParams();
   const { slug } = useParams();
   // User của trang profile
+  const { setRecipient } = useContext(ChatContext);
+  const { profile } = useContext(UserContext);
   const [user, setUser] = useState({});
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -80,8 +87,6 @@ const FriendProfile = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      console.log('>', user);
-
       const response = await postService.getPosts(page, { userId: params?.userId, slug });
       response?.data.posts && setIsEnd(true);
       setPosts((prevPosts) => [...prevPosts, ...(response?.data?.posts || [])]);
@@ -184,7 +189,23 @@ const FriendProfile = () => {
                 0 following
               </Typography>
             </Grid>
+            {profile && user.id !== profile.id && (
+              <Grid>
+                <Button
+                  variant='contained'
+                  endIcon={<SendIcon />}
+                  onClick={() => {
+                    setRecipient(user);
+                    setRecipientToLS(user);
+                    navigate('/chat');
+                  }}
+                >
+                  Chat
+                </Button>
+              </Grid>
+            )}
           </Grid>
+
           <Typography variant='body1' color='text.secondary' align='center' gutterBottom>
             @{user.displayName}
           </Typography>

@@ -25,3 +25,12 @@ export const setProfileToLS = (profile) => {
   console.log('al');
   localStorage.setItem('profile', JSON.stringify(profile));
 };
+
+export const setRecipientToLS = (recipient) => {
+  localStorage.setItem('recipient', JSON.stringify(recipient));
+}
+
+export const getRecipient = () => {
+  const result = localStorage.getItem('recipient');
+  return result ? JSON.parse(result) : null;
+};

@@ -1,151 +1,96 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Grid, Divider, InputAdornment, IconButton, TextField, Button } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import ChatCard from './ChatCard'; // Adjust the import path
 import Navbar from '../../components/Navbar';
 import SendIcon from '@mui/icons-material/Send';
 import Message from './Message';
+import { db } from '../../firebase/config';
+import {
+  addDoc,
+  and,
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  or,
+  orderBy,
+  query,
+  serverTimestamp,
+  where
+} from 'firebase/firestore';
+import UserContext from '../../context/UserContext';
+import ChatContext from '../../context/ChatContext';
 
-const chatData = [
-  {
-    name: 'Ronaldo ',
-    message: "Sure, let's meet tomorrow at the cafe.",
-    timestamp: '15 mins ago',
-    avatar: 'https://example.com/avatars/alex.jpg',
-    hasNewMessage: true
-  },
-  {
-    name: 'Messi',
-    message: "Sure, let's meet tomorrow at the cafe.",
-    timestamp: '15 mins ago',
-    avatar: 'https://example.com/avatars/alex.jpg',
-    hasNewMessage: true
-  },
-  {
-    name: 'John Doe',
-    message: 'Hey, how are you?',
-    timestamp: '5 mins ago',
-    avatar: 'https://example.com/avatars/john.jpg',
-    hasNewMessage: true
-  },
-  {
-    name: 'Jane Smith',
-    message: 'I saw that movie last night. It was amazing!',
-    timestamp: '10 mins ago',
-    avatar: 'https://example.com/avatars/jane.jpg',
-    hasNewMessage: false
-  },
-  {
-    name: 'Alex Teles',
-    message: "Sure, let's meet tomorrow at the cafe.",
-    timestamp: '15 mins ago',
-    avatar: 'https://example.com/avatars/alex.jpg',
-    hasNewMessage: true
-  }
-];
-const messageData = [
-  {
-    content: "Sure, let's meet tomorrow at the cafe.",
-    timestamp: '15 mins ago',
-    isMyMessage: false
-  },
-  {
-    content: 'Hey, how are you?',
-    timestamp: '5 mins ago',
-    isMyMessage: true
-  },
-  {
-    content: 'I saw that movie last night. It was amazing!',
-    timestamp: '10 mins ago',
-    isMyMessage: false
-  },
-  {
-    content: "Sure, let's meet tomorrow at the cafe.",
-    timestamp: '15 mins ago',
-    isMyMessage: true
-  },
-  {
-    content: 'Good morning! How was your day?',
-    timestamp: '25 mins ago',
-    isMyMessage: false
-  },
-  {
-    content: 'I heard the news, that sounds interesting.',
-    timestamp: '40 mins ago',
-    isMyMessage: false
-  },
-  {
-    content: 'Just wanted to check in, are you free later?',
-    timestamp: '1 hour ago',
-    isMyMessage: true
-  },
-  {
-    content: "Sorry, I can't make it tomorrow.",
-    timestamp: '2 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: 'No worries, we can reschedule.',
-    timestamp: '2 hours ago',
-    isMyMessage: true
-  },
-  {
-    content: 'Have a great day!',
-    timestamp: '3 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: 'What do you think about this project?',
-    timestamp: '4 hours ago',
-    isMyMessage: true
-  },
-  {
-    content: 'I think it has great potential!',
-    timestamp: '4 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: "Let's meet at the park on Sunday.",
-    timestamp: '5 hours ago',
-    isMyMessage: true
-  },
-  {
-    content: 'Sounds like a plan!',
-    timestamp: '5 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: 'Did you watch the latest episode?',
-    timestamp: '6 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: "No, I haven't had the chance yet.",
-    timestamp: '6 hours ago',
-    isMyMessage: true
-  },
-  {
-    content: 'Looking forward to our trip next week!',
-    timestamp: '7 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: 'Me too, it will be a great adventure!',
-    timestamp: '7 hours ago',
-    isMyMessage: true
-  },
-  {
-    content: 'Let me know when you are available to talk.',
-    timestamp: '8 hours ago',
-    isMyMessage: false
-  },
-  {
-    content: "I'm free now. Want to have a call?",
-    timestamp: '8 hours ago',
-    isMyMessage: true
-  }
-];
+const chatData = [];
 const ChatList = () => {
+  const { profile } = useContext(UserContext);
+  const { recipient, setRecipient } = useContext(ChatContext);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const sendMessage = async () => {
+    if (message.trim() === '') {
+      alert('Enter valid message');
+      return;
+    }
+    const { id, displayName, avatar } = profile;
+    await addDoc(collection(db, 'messages'), {
+      text: message,
+      name: displayName,
+      avatar: avatar,
+      createdAt: serverTimestamp(),
+      senderId: profile.id,
+      recipientId: recipient.id
+    });
+    setMessage('');
+  };
+  useEffect(() => {
+    // const fetch = async (query) => {
+    //   const querySnapshot = await getDocs(query);
+    //   querySnapshot.forEach((doc) => {
+    //     console.log(doc.id, ' => ', doc.data());
+    //   });
+    // };
+    // or(where('senderId', '==', profile.id), where('recipientId', '==', profile.id)),
+
+    const q1 = query(
+      collection(db, 'messages'),
+      or(
+        and(where('senderId', '==', profile.id), where('recipientId', '==', recipient.id)),
+        and(where('senderId', '==', recipient.id), where('recipientId', '==', profile.id))
+      ),
+      orderBy('createdAt', 'desc'),
+      limit(8)
+    );
+    // const q2 = query(
+    //   collection(db, 'messages'),
+    //   where('recipientId', '==', recipient.id),
+    //   orderBy('createdAt', 'desc'),
+    //   limit(8)
+    // );
+
+    const unsubscribe = onSnapshot(q1, (QuerySnapshot) => {
+      console.log(QuerySnapshot);
+      const fetchedMessages = [];
+      QuerySnapshot.forEach((doc) => {
+        fetchedMessages.push({ ...doc.data(), id: doc.id });
+      });
+      setMessages([...messages, ...fetchedMessages].reverse());
+    });
+    // const unsubscribe2 = onSnapshot(q2, (QuerySnapshot) => {
+    //   console.log(QuerySnapshot);
+    //   const fetchedMessages = [];
+    //   QuerySnapshot.forEach((doc) => {
+    //     fetchedMessages.push({ ...doc.data(), id: doc.id });
+    //   });
+    //   setMessages([...messages, ...fetchedMessages]);
+    // });
+    // fetch(q1);
+    return () => {
+      unsubscribe();
+      // unsubscribe2();
+    };
+  }, []);
   return (
     <Box
       bgcolor={'background.default'}
@@ -190,6 +135,13 @@ const ChatList = () => {
           style={{ height: `calc(100vh - 64px)`, display: 'flex', flexDirection: 'column-reverse' }}
         >
           <TextField
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.keyCode === 13) {
+                sendMessage();
+              }
+            }}
             fullWidth
             variant='outlined'
             placeholder='Type your message...'
@@ -204,8 +156,8 @@ const ChatList = () => {
             }}
           />
           <Box padding={2} overflow={'scroll'}>
-            {messageData.map((chat, index) => (
-              <Message key={index} message={chat.content} isMyMessage={chat.isMyMessage} />
+            {messages.map((msg, index) => (
+              <Message key={index} message={msg.text} isMyMessage={msg.senderId === profile.id} />
             ))}
           </Box>
         </Grid>
