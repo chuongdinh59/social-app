@@ -99,7 +99,7 @@ const ChatList = () => {
     >
       <Navbar />
       <Grid container spacing={2} padding={1}>
-        <Grid item xs={3} padding={2}>
+        {/* <Grid item xs={3} padding={2}>
           <div
             style={{
               overflowY: chatData.length > 4 ? 'scroll' : 'auto',
@@ -127,7 +127,7 @@ const ChatList = () => {
               <ChatCard key={index} {...chat} />
             ))}
           </div>
-        </Grid>
+        </Grid> */}
         <Grid
           item
           padding={2}
