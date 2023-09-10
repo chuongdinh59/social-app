@@ -23,6 +23,7 @@ import { clearLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from
 import { isDateValid } from '../../utils/dateFormat';
 import LoginGoogleBtn from './LoginGoogle';
 import { googleLogout } from '@react-oauth/google';
+import { Link as Redirect } from 'react-router-dom';
 const defaultTheme = createTheme();
 
 export default function Login() {
@@ -164,9 +165,9 @@ export default function Login() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href='#' variant='body2'>
+                  <Redirect to='/register' variant='body2'>
                     {"Don't have an account? Sign Up"}
-                  </Link>
+                  </Redirect>
                 </Grid>
               </Grid>
             </Box>

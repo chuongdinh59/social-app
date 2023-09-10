@@ -15,6 +15,8 @@ import { useState } from 'react';
 import userService from '../../apis/userService';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -34,11 +36,21 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Register() {
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    password: '',
+    confirmPass: '',
+    email: ''
+  });
   // Mutations
   const mutation = useMutation((formData) => userService.registerAccount(formData), {
     onSuccess: (res) => {
       console.log(res);
+      navigate('/login');
     },
     onError: (error) => {
       console.error('Error:', error.message);
@@ -49,11 +61,26 @@ export default function Register() {
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
+  const validateForm = (form) => {
+    for (const pair of form) {
+      const fieldName = pair[0];
+      const fieldValue = pair[1];
+      if (fieldName != 'avatarFile' && !fieldValue.trim()) {
+        return false;
+      }
+    }
+    if (form.get('password') != form.get('confirmPassword')) return false;
+    return true;
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     selectedFile && form.append('avatarFile', selectedFile);
-    mutation.mutate(form);
+    if (validateForm(form)) {
+      mutation.mutate(form);
+    } else {
+      toast.error('Chưa đủ thông tin hoặc mật khẩu không khớp xác nhận');
+    }
   };
 
   const handleFileChange = (e) => {
