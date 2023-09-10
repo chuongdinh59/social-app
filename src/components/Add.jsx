@@ -19,6 +19,7 @@ import postService from '../apis/postService';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { PostContext } from '../context/PostContext';
+import UserContext from '../context/UserContext';
 
 const SytledModal = styled(Modal)({
   display: 'flex',
@@ -35,9 +36,11 @@ const UserBox = styled(Box)({
 
 const Add = () => {
   const [open, setOpen] = useState(false);
-  const [text, setText] = useState();
+  const [text, setText] = useState('');
   const [fileData, setFileData] = useState([]);
   const { updatePosts } = useContext(PostContext);
+  const { profile } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
   const openExplorer = () => {
     const fileInput = document.getElementById('file-input');
     if (fileInput) {
@@ -50,21 +53,23 @@ const Add = () => {
     }
   });
   const sendPost = async () => {
+    if (!text?.trim() && fileData.length === 0) {
+      toast.warning('Bài post chưa có nội dung');
+      return;
+    }
     try {
-      if (!text && fileData.length === 0) {
-        alert('Empty Content ');
-        return;
-      }
       const formData = new FormData();
       formData.append('content', text);
       for (let i = 0; i < fileData.length; i++) {
         formData.append('images', fileData[i].file);
       }
+      console.log(formData);
       const { data } = await postMutate.mutateAsync(formData);
       console.log(data);
       updatePosts([data], true);
       toast.success('Đằng bài thành công');
       setOpen(false);
+      setText('');
     } catch {
       toast.error('Đăng bài không thành công');
     }
@@ -127,12 +132,9 @@ const Add = () => {
             Create post
           </Typography>
           <UserBox>
-            <Avatar
-              src='https://images.pexels.com/photos/846741/pexels-photo-846741.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-              sx={{ width: 30, height: 30 }}
-            />
+            <Avatar src={profile.avatar} sx={{ width: 30, height: 30 }} />
             <Typography fontWeight={500} variant='span'>
-              John Doe
+              {profile.displayName}
             </Typography>
           </UserBox>
           <TextField

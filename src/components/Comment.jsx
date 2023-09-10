@@ -4,6 +4,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { FacebookSelector } from '@charkour/react-reactions';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 import {
   Avatar,
   Box,
@@ -23,11 +25,12 @@ import {
 import { useContext, useEffect, useRef, useState } from 'react';
 import commentService from '../apis/commentService';
 import { getProfileFromLS } from '../utils/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UserContext from '../context/UserContext';
 import ReplyComment from './ReplyComment';
 import { dateFormatFromString } from '../utils/dateFormat';
 import actionService from '../apis/actionService';
+import { isEmptyObject } from '../utils/utils';
 
 const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   // #region get user profile
@@ -42,6 +45,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   // #region action handlers
   const [actionOnComment, setActionOnComment] = useState(comment?.currentAction?.toLowerCase());
   const [showIcon, setShowIcon] = useState(false);
+  const navigate = useNavigate();
   const handleReactOnComment = (key) => {
     setActionOnComment(key);
     setShowIcon(false);
@@ -62,7 +66,11 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
       if (actionOnComment) formData.append('action', actionOnComment.toUpperCase());
       const data = await actionService.actionOnComment(formData);
     };
-    saveOrUpdateOrDelete();
+    if (!isEmptyObject(profile)) {
+      saveOrUpdateOrDelete();
+    } else {
+      navigate('/login');
+    }
   }, [actionOnComment]);
   // #endregion
   // #region click to open menu delete or ...
@@ -105,7 +113,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
     setShowReplies(true);
     const replies = await commentService.getRepliesByCommentId(comment.id, page);
     replies?.data && setReplies(replies.data.data);
-    console.log(replies.data)
+    console.log(replies.data);
   };
   // #endregion
   // #region handle Reply delete ...
@@ -170,7 +178,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
           </Box>
           <Box>
             <Box
-              sx={{ position: 'absolute', top: '60%', left: '50%', zIndex: 10 }}
+              sx={{ position: 'absolute', top: '60%', left: '80%', zIndex: 10 }}
               onMouseEnter={() => setShowIcon(true)}
               onMouseLeave={() => setShowIcon(false)}
             >
@@ -183,8 +191,8 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
                     <FacebookSelector reactions={[actionOnComment.toLowerCase()]} iconSize={12} />
                   ) : (
                     <>
-                      <Typography>{comment.countAction || 10}</Typography>
-                      <ThumbUpOffAltIcon />
+                      <Typography>{comment.countAction || 0}</Typography>
+                      <FavoriteBorderIcon />
                     </>
                   )}
                 </Box>
@@ -203,7 +211,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
                 <Reply />
               </IconButton>
               <IconButton size='small' aria-label='reply' onClick={() => handleShowReply(page)}>
-                <MoreHorizIcon />
+                <MoreHorizIcon /> {comment.countReply > 0 ? ` Có ${comment.countReply} phản hồi.. ` : ''}
               </IconButton>
             </Box>
           </Box>
@@ -220,7 +228,7 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
           {replies?.map((reply, index) => (
             <ReplyComment postUser={postUser} reply={reply} key={index} handleDelete={handleDeleteReply} />
           ))}
-          {!isLockComment && (
+          {!isEmptyObject(profile) && !isLockComment && (
             <TextField
               sx={{ width: '95%' }}
               label='Reply'

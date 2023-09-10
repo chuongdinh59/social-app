@@ -77,7 +77,12 @@ const Navbar = () => {
   return (
     <AppBar sx={{ position: 'sticky', top: 0, left: 0, right: 0, width: '100%', height: '64px' }}>
       <StyledToolbar>
-        <Box display='flex'>
+        <Box
+          sx={{ display: 'flex', cursor: 'pointer' }}
+          onClick={() => {
+            navigate('/');
+          }}
+        >
           <Avatar src={logo} />
           <Typography variant='h6' sx={{ display: { xs: 'none', sm: 'block' } }}>
             Surface

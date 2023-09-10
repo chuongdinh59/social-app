@@ -60,6 +60,9 @@ const friends = [
   }
 ];
 const FriendProfile = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scrolls to the top of the page when the component mounts or updates
+  }, []);
   /**
    * params {userId}
    */
@@ -71,10 +74,15 @@ const FriendProfile = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [isEnd, setIsEnd] = useState(false);
+  /**
+   * GET POST
+   */
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await postService.getPosts(page, { userId: user.id, slug });
+      console.log('>', user);
+
+      const response = await postService.getPosts(page, { userId: params?.userId, slug });
       response?.data.posts && setIsEnd(true);
       setPosts((prevPosts) => [...prevPosts, ...(response?.data?.posts || [])]);
       setPage((prevPage) => prevPage + 1);
@@ -93,7 +101,7 @@ const FriendProfile = () => {
       try {
         const res = await userService.getUserBySlugOrId({
           slug,
-          id: params.id || null
+          userId: params.userId || null
         });
         if (res.data !== null) {
           setUser(res.data);

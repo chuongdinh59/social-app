@@ -13,16 +13,19 @@ import {
 } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '../context/UserContext';
 import { FacebookSelector } from '@charkour/react-reactions';
 import { dateFormatFromString } from '../utils/dateFormat';
 import actionService from '../apis/actionService';
+import { isEmptyObject } from '../utils/utils';
 
 const ReplyComment = ({ postUser, reply, key, handleDelete }) => {
   // #region get user profile
   const { profile } = useContext(UserContext);
+  const navigate = useNavigate();
+
   //#endregion
   // #region action handlers
   const [actionOnReply, setActionOnReply] = useState(reply?.currentAction?.toLowerCase());
@@ -49,7 +52,11 @@ const ReplyComment = ({ postUser, reply, key, handleDelete }) => {
         const data = await actionService.actionOnReply(formData);
       }
     };
-    saveOrUpdateOrDelete();
+    if (!isEmptyObject(profile)) {
+      saveOrUpdateOrDelete();
+    } else {
+      navigate('/login');
+    }
   }, [actionOnReply]);
   // #region click to open menu delete or ...
   const [anchorElForClick, setAnchorElForClick] = useState(null);

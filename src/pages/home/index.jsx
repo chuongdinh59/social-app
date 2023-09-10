@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@emotion/react';
 import { Box, Stack, createTheme } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Add from '../../components/Add';
 import Feed from '../../components/Feed';
 import Navbar from '../../components/Navbar';
@@ -8,6 +8,9 @@ import Rightbar from '../../components/Rightbar';
 import Sidebar from '../../components/Sidebar';
 import { useChangePasswordNavigation } from '../../hooks/useChangePasswordNavigation';
 function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scrolls to the top of the page when the component mounts or updates
+  }, []);
   const [mode, setMode] = useState('light');
   useChangePasswordNavigation();
   const darkTheme = createTheme({
