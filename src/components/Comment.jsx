@@ -31,6 +31,7 @@ import ReplyComment from './ReplyComment';
 import { dateFormatFromString } from '../utils/dateFormat';
 import actionService from '../apis/actionService';
 import { isEmptyObject } from '../utils/utils';
+import { toast } from 'react-toastify';
 
 const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
   // #region get user profile
@@ -103,6 +104,8 @@ const Comment = ({ postUser, comment, handleDelete, isLockComment }) => {
         content: reply,
         comment: comment.id
       });
+    } else {
+      toast.warning('Chưa nhập bình luận');
     }
   };
   const handleGetMoreReplies = async () => {
