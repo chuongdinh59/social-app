@@ -1,7 +1,9 @@
 import {
   URL_ACTIVE_LECTURE,
   URL_CURRENT_USER,
+  URL_CURRENT_USER_BY_ALUMNI_ID,
   URL_REGISTER,
+  URL_REGISTER_GOOGLE,
   URL_UPLOAD_AVATAR,
   URL_UPLOAD_BG,
   URL_USER,
@@ -11,6 +13,9 @@ import http from '../utils/http';
 const userService = {
   getCurrentUser() {
     return http.get(`${URL_CURRENT_USER}`);
+  },
+  getUserById(id) {
+    return http.get(`${URL_CURRENT_USER_BY_ALUMNI_ID(id)}`);
   },
   registerAccount(body) {
     return http.post(URL_REGISTER, body, {

@@ -44,7 +44,8 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config;
-        if (url === URL_LOGIN || url === URL_REGISTER) {
+        if (url === URL_LOGIN) {
+          //|| url === URL_REGISTER
           const data = response.data;
           this.accessToken = data.data.access_token;
           this.refreshToken = data.data.refresh_token;

@@ -2,6 +2,7 @@ import { AuthRoute } from '../components/AuthRoute';
 import PageNotFound from '../pages/404';
 import ChangePassword from '../pages/auth/ChangePassword';
 import Login from '../pages/auth/Login';
+import LoginGoogle from '../pages/auth/LoginGoogle';
 import Register from '../pages/auth/Register';
 import Chat from '../pages/chat';
 import Home from '../pages/home';
@@ -14,6 +15,7 @@ export const routers = [
   { path: 'user/:slug', element: <FriendProfile /> },
   { path: 'user', element: <FriendProfile /> },
   { path: 'login', element: <Login /> },
+  { path: 'login-google', element: <LoginGoogle /> },
   {
     path: 'change-password',
     element: <ChangePassword />

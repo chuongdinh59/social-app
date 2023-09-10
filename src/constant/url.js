@@ -12,7 +12,9 @@ export const URL_REFRESH_TOKEN = '/refresh-token'; // Replace with your refresh 
 
 export const URL_USER = '/api/users/';
 export const URL_CURRENT_USER = `${URL_USER}current-user/`;
+export const URL_CURRENT_USER_BY_ALUMNI_ID = (id) => `${URL_USER}${id}/`;
 export const URL_REGISTER = `${URL_USER}register/`; // Replace with your register URL
+export const URL_REGISTER_GOOGLE = `${URL_USER}register-google/`; // Replace with your register URL
 export const URL_UPLOAD_AVATAR = `${URL_USER}upload-avatar/`;
 export const URL_UPLOAD_BG = `${URL_USER}upload-bg/`;
 export const URL_USER_BY_ID_OR_SLUG = (body) => {
