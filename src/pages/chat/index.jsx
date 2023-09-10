@@ -131,7 +131,7 @@ const ChatList = () => {
         <Grid
           item
           padding={2}
-          xs={9}
+          xs={12}
           style={{ height: `calc(100vh - 64px)`, display: 'flex', flexDirection: 'column-reverse' }}
         >
           <TextField
