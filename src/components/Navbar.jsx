@@ -93,12 +93,12 @@ const Navbar = () => {
           <InputBase placeholder='Search...' />
         </Search>
         <Icons>
-          <Badge badgeContent={4} color='error'>
+          {/* <Badge badgeContent={4} color='error'>
             <Mail cursor='pointer' />
           </Badge>
           <Badge badgeContent={2} color='error'>
             <Notifications cursor='pointer' />
-          </Badge>
+          </Badge> */}
           <Avatar sx={{ width: 30, height: 30, cursor: 'pointer' }} src={profile.avatar} onClick={handleAvatarClick} />
         </Icons>
         <UserBox onClick={handleAvatarClick}>
