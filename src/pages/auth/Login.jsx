@@ -21,6 +21,8 @@ import userService from '../../apis/userService';
 import UserContext from '../../context/UserContext';
 import { clearLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../../utils/auth';
 import { isDateValid } from '../../utils/dateFormat';
+import LoginGoogleBtn from './LoginGoogle';
+import { googleLogout } from '@react-oauth/google';
 const defaultTheme = createTheme();
 
 export default function Login() {
@@ -154,28 +156,7 @@ export default function Login() {
               >
                 Sign In
               </Button>
-              <Button
-                sx={{ mt: 1 }}
-                variant='contained'
-                style={{ backgroundColor: '#FF0000', color: '#FFFFFF', borderRadius: '10px' }}
-                startIcon={<Google />}
-                fullWidth
-                size='large'
-                href='https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/login-google&response_type=code&client_id=510556489503-gtmvki42khmh32mfnrl51qunq5islnvt.apps.googleusercontent.com&approval_prompt=force'
-              >
-                Continue with Google
-              </Button>
-
-              <Button
-                sx={{ mt: 1, mb: 3 }}
-                variant='contained'
-                style={{ backgroundColor: '#4267B2', color: '#FFFFFF', borderRadius: '10px' }}
-                startIcon={<Facebook />}
-                fullWidth
-                size='large'
-              >
-                Continue with Facebook
-              </Button>
+              <LoginGoogleBtn />
               <Grid container>
                 <Grid item xs>
                   <Link href='#' variant='body2'>
